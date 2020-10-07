@@ -58,7 +58,9 @@ export class Home extends Component<{}, State>{
                     <Grid item xs={3}>
                         <PlayersAutoComplete
                             players = {this.state.players}
-                            playerAdded = {this.playerAdded}
+                            handlePlayerToggle = {this.handlePlayerToggle}
+                            playersCompare = {this.state.playersCompare}
+                            ///checked = {this.state.playersCompare.map(player => player.id).sort()}
                         />
                     </Grid>
                     <Grid item xs>
@@ -101,12 +103,15 @@ export class Home extends Component<{}, State>{
         )
     }
 
-    
-    private readonly playerAdded = (player: Player): void => {
-
-        if(this.state.playersCompare.find(p => p.id===player.id) !== undefined){
-            return;
+    private readonly handlePlayerToggle = (player: Player): void => {
+        if(this.state.playersCompare.some(p => p.id==player.id)){
+            this.playerRemoved(player.id)
         }
+        else{
+            this.playerAdded(player);
+        }
+    }
+    private readonly playerAdded = (player: Player): void => {
 
         this.setState(prevState => ({
             ...prevState,
