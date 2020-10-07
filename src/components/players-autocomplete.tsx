@@ -70,25 +70,6 @@ export class PlayersAutoComplete extends Component<Props, State>{
                         })}
                 </List>
             </>
-
-            /*<Autocomplete
-                open
-                filterOptions = {createFilterOptions({limit:20})}
-                options={this.props.players}
-                getOptionLabel={(option) => option.name}
-                renderInput={(params) => <TextField {...params} variant="outlined" label="Players"  />}
-
-                renderTags={() => null}
-                closeIcon = {null}
-                popupIcon = {null}
-                onChange={(event, newValue, reason, details) => {
-                    if(reason === 'select-option' && details?.option != undefined){
-                        this.props.handlePlayerToggle(details.option)
-                    }
-                    if(reason === 'remove-option' && details?.option != undefined){
-                    }
-                }}
-            />*/
         )
     }
     private readonly handleSearchChange = (e: any): void => {
