@@ -39,9 +39,9 @@ export class Home extends Component<{}, State>{
       };
     
     public componentDidMount(): void{
-        $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent('https://stiga.trefik.cz/ithf/ranking/ranking.txt') + '&callback=?')
+        $.ajax('https://thcserver.herokuapp.com/all')
         .then(res => {
-            const players:Player[] =  playersService.parseContent(res.contents)
+            const players:Player[] =  playersService.parseContent(res)
             playersService.setPlayerScores(players)
             this.setState({ players: players});
         })
@@ -119,11 +119,10 @@ export class Home extends Component<{}, State>{
                 newPoints:-1
             }), prevState.selectedLevel)
         }))
-
-        $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent(`https://stiga.trefik.cz/ithf/ranking/player.aspx?ID=${player.id}`) + '&callback=?')
+        $.ajax('https://thcserver.herokuapp.com/single/'+player.id)
         .then(res => {
             
-            let score = playersService.parsePlayerMinPoints(res.contents);
+            let score = Number(res);
             let items = [...this.state.playersCompare]
             for(var i=0; i<items.length; i++){
                 if(items[i].id === player.id && items[i].lowestScore===-1){

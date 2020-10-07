@@ -8,6 +8,7 @@ export interface Player{
     nation: string,
     points: number,
     value: number
+    club: string
 }
 
 export interface PlayerRanked extends Player{
@@ -109,6 +110,7 @@ class PlayersService {
                 rank: Number(stringArray[i][0]),
                 id: stringArray[i][1],
                 name: stringArray[i][2],
+                club: stringArray[i][3],
                 nation: stringArray[i][4],
                 points: Number(stringArray[i][5]),
                 value: Number(stringArray[i][6]),

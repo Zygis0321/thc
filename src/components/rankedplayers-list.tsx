@@ -99,7 +99,7 @@ export class RankedPlayersList extends Component<Props, {}>{
                         {
                             value.lowestScore===-1 ? <Skeleton width={70}/> :(
                                 <Grid container direction='row' >
-                                    <Box mr={0.5}><Typography>{value.points}</Typography></Box>
+                                    <Box mr={0.5}><Typography>{value.newPoints}</Typography></Box>
                                     {
                                         value.points < value.newPoints ? <Typography style={ratingUpStyle}>{`(+${Math.abs(value.points-value.newPoints)})`}</Typography>:
                                         <Typography style={ratingConstantStyle}>{`(=${value.points-value.newPoints})`}</Typography> 
