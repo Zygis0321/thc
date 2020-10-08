@@ -39,7 +39,7 @@ export class Home extends Component<{}, State>{
       };
     
     public componentDidMount(): void{
-        $.ajax('https://thcserver.herokuapp.com/all')
+        $.ajax('https://serene-crag-74633.herokuapp.com/all')
         .then(res => {
             const players:Player[] =  playersService.parseContent(res)
             playersService.setPlayerScores(players)
@@ -124,7 +124,7 @@ export class Home extends Component<{}, State>{
                 newPoints:-1
             }), prevState.selectedLevel)
         }))
-        $.ajax('https://thcserver.herokuapp.com/single/'+player.id)
+        $.ajax('https://serene-crag-74633.herokuapp.com/single/'+player.id)
         .then(res => {
             
             let score = Number(res);
