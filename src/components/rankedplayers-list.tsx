@@ -48,7 +48,7 @@ export class RankedPlayersList extends Component<Props, {}>{
 
     render(): React.ReactNode{
         return(
-            <SortableList onSortEnd={this.props.reorder} distance={1}>
+            <SortableList onSortEnd={this.props.reorder} distance={1} useWindowAsScrollContainer>
                 <ListItem>
                     <Grid item xs = {1}>
                         <Typography >#</Typography>
