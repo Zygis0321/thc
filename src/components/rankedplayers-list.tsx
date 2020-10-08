@@ -1,16 +1,18 @@
-import { Box, Grid, IconButton, List, ListItem, ListItemText, Typography } from "@material-ui/core";
+import { Box, Grid, IconButton, Typography } from "@material-ui/core";
 import React, { Component } from "react";
 import { SortableElement, SortableContainer } from "react-sortable-hoc";
 import CSS from 'csstype';
 import Skeleton from "@material-ui/lab/Skeleton";
 import { PlayerRanked } from "../services/player-service";
 import { Clear } from "@material-ui/icons";
+import { List } from 'react-virtualized';
 
 const listItemStyle: CSS.Properties = {
     boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.2)',
     backgroundColor: 'rgb(255, 255, 255)',
     marginTop: '12px',
-    marginBottom: '12px'
+    marginBottom: '12px',
+    height: '124px'
 }
 
 const ratingUpStyle: CSS.Properties = {
@@ -26,15 +28,8 @@ const ratingConstantStyle: CSS.Properties = {
     color: '#969696'
 }
 
-const SortableItem = SortableElement(({children}:any) => { 
-    return(
-        <ListItem style={listItemStyle}>{children}</ListItem>
-    )
-});
+const SortableItem = SortableElement(({children}:any) => children);
 
-const SortableList = SortableContainer(({children}:any) => {
-  return <List>{children}</List>;
-});
 
 interface OwnProps{
     playersCompare: PlayerRanked[] 
@@ -45,32 +40,34 @@ interface OwnProps{
 type Props = OwnProps
 
 export class RankedPlayersList extends Component<Props, {}>{
-
-    render(): React.ReactNode{
-        return(
-            <SortableList onSortEnd={this.props.reorder} distance={1}>
-                <ListItem>
-                    <Grid item xs = {1}>
-                        <Typography >#</Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Typography >Name</Typography>
-
-                    </Grid>
-                    <Grid item xs>
-                        <Typography >Rank</Typography>
-
-                    </Grid>
-                    <Grid item xs>
-                        <Typography >Points</Typography>
-
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Typography align='justify' >Tournament Points</Typography>
-                    </Grid>
-                </ListItem>
-                {this.props.playersCompare.map((value, index) => (
-                <SortableItem key={index} index={index}>
+    
+    componentDidUpdate(prevProps:Props) {
+        if(prevProps.playersCompare !== this.props.playersCompare){
+            console.log('ffff')
+            this.forceUpdate()
+        }
+    }
+    
+    private readonly SortableList = SortableContainer(({children}:any) => {
+        return( 
+            <List
+                height={240}
+                //helperClass='SortableListRowActive'
+                overscanRowCount={2}
+                rowCount={this.props.playersCompare.length}
+                rowHeight={100}
+                rowRenderer={this.rowRenderer}
+                width={600}
+            >
+                {children}
+            </List>
+         );
+      });
+    private readonly rowRenderer = ({index, key, style}:any) => {
+        const value = this.props.playersCompare[index]
+        return (
+                <SortableItem key={key} index={index} >
+                    <Grid container direction = 'row' style={listItemStyle}>
                     <Grid item xs = {1}>
                     <Typography><b>{value.pos}</b></Typography>
 
@@ -95,7 +92,7 @@ export class RankedPlayersList extends Component<Props, {}>{
 
                     </Grid>
 
-                    <Grid item xs>
+                    <Grid item xs key={value.newPoints}>
                         {
                             value.lowestScore===-1 ? <Skeleton width={70}/> :(
                                 <Grid container direction='row' >
@@ -122,9 +119,19 @@ export class RankedPlayersList extends Component<Props, {}>{
                             </Box>
                         </Grid>
                     </Grid>
+                    </Grid>
                 </SortableItem>
-                ))}
-            </SortableList>
+        )
+
+    }
+
+    render(): React.ReactNode{
+        return(
+            <this.SortableList 
+                onSortEnd={this.props.reorder} 
+                distance={1}
+                
+            />
         )
     }
 
