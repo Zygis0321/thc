@@ -21,7 +21,7 @@ export interface PlayerRanked extends Player{
 
 class PlayersService {
 
-    private prefScores:number[] = new Array(6005).fill(0)
+    private prefScores:number[] = []
 
     rankPlayers = (players: PlayerRanked[]): PlayerRanked[] => {
         for(let i=0; i<players.length; i++){
@@ -139,6 +139,7 @@ class PlayersService {
     }
 
     setPlayerScores(players: Player[]): void{
+        this.prefScores = new Array(6005).fill(0)
         for(let i=0; i<players.length; i++){
             this.prefScores[players[i].points]++;
         }

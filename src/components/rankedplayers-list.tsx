@@ -48,7 +48,19 @@ export class RankedPlayersList extends Component<Props, {}>{
 
     render(): React.ReactNode{
         return(
-            <SortableList onSortEnd={this.props.reorder} distance={1} useWindowAsScrollContainer>
+            <SortableList 
+                onSortEnd={this.props.reorder} 
+                shouldCancelStart = {(e: any) => {
+                    if(
+                        e.target.id == "buttonRemove" || 
+                        e.target.nearestViewportElement !== undefined && 
+                        e.target.nearestViewportElement.id === "buttonRemove"
+                    ){
+                        return true
+                    }
+                }} 
+                useWindowAsScrollContainer
+            >
                 <ListItem>
                     <Grid item xs = {1}>
                         <Typography >#</Typography>
@@ -115,9 +127,9 @@ export class RankedPlayersList extends Component<Props, {}>{
                             <Box  display="flex" alignItems="center" justifyContent="flex-end" marginRight={2} >
                                 <Typography align='right'><b>{value.score}</b></Typography>
                             </Box>
-                            <Box display="flex" alignItems="center" justifyContent="flex-end" >
-                                <IconButton size='small' onClick = {() => this.props.playerRemoved(value.id)}>
-                                    <Clear/>
+                            <Box display="flex" alignItems="center" justifyContent="flex-end">
+                                <IconButton size='small' onClick = {() => this.props.playerRemoved(value.id)} id="buttonRemove">
+                                    <Clear id="buttonRemove"/>
                                 </IconButton>
                             </Box>
                         </Grid>

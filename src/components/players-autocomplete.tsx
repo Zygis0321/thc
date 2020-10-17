@@ -11,7 +11,7 @@ import { Player, PlayerRanked } from '../services/player-service';
 interface OwnProps{
     players: Player[]
     handlePlayerToggle: (player: Player) => void
-    playersCompare: PlayerRanked[]
+    playersCompare: Player[]
 }
 interface State{
     searchText: string
