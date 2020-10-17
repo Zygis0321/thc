@@ -2,23 +2,25 @@ import React, { Component } from 'react';
 import playersService, { Player, PlayerRanked } from '../services/player-service';
 import { PlayersAutoComplete } from './players-autocomplete';
 import $ from "jquery";
-import { Box, Button, Container, FormControl, Grid, InputLabel, List, ListItem, ListItemText, MenuItem, Paper, Select } from '@material-ui/core';
+import { Box, Button, Container, FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 import arrayMove from 'array-move';
 import { Level, levelList } from '../data/scorecalc-data';
 import { ClearAll } from '@material-ui/icons';
 import { RankedPlayersList } from './rankedplayers-list';
+import { RootState } from '../store/combineReducers';
+import { connect } from 'react-redux';
 
 
 interface State{
-    players: Player[]
     playersCompare: PlayerRanked[] 
     selectedLevel: string
 }
 
-export class Home extends Component<{}, State>{
+type Props = ReturnType<typeof mapStateToProps>
+
+export class HomeComponent extends Component<Props, State>{
 
     public readonly state: State = {
-        players: [],
         playersCompare: [],
         selectedLevel: levelList[0].name
     }
@@ -38,16 +40,14 @@ export class Home extends Component<{}, State>{
         }));
       };
     
+    public componentDidUpdate(prevProps: Props): void{
+        if(prevProps.players.length===0 && this.props.players.length > 0){
+            playersService.setPlayerScores(this.props.players)
+        }
+    }
+
     public componentDidMount(): void{
-        $.ajax('https://serene-crag-74633.herokuapp.com/all')
-        .then(res => {
-            const players:Player[] =  playersService.parseContent(res)
-            playersService.setPlayerScores(players)
-            this.setState({ players: players});
-        })
-        .catch(() => {
-            console.log("error")
-        })
+
     }
 
     render(): React.ReactNode{
@@ -57,7 +57,7 @@ export class Home extends Component<{}, State>{
                 <Grid container spacing={3}>
                     <Grid item xs={3}>
                         <PlayersAutoComplete
-                            players = {this.state.players}
+                            players = {this.props.players}
                             handlePlayerToggle = {this.handlePlayerToggle}
                             playersCompare = {this.state.playersCompare}
                             ///checked = {this.state.playersCompare.map(player => player.id).sort()}
@@ -167,3 +167,10 @@ export class Home extends Component<{}, State>{
         }));
     }
 }
+
+const mapStateToProps = (state: RootState) =>({
+    players: state.players
+});
+
+const Home = connect(mapStateToProps)(HomeComponent)
+export {Home}
