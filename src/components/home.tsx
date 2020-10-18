@@ -55,7 +55,7 @@ export class HomeComponent extends Component<Props, State>{
             <Container>
                 <Box pt={5}>
                 <Grid container spacing={3}>
-                    <Grid item xs={3}>
+                    <Grid item xs={12}  sm={3} style={{minWidth:'200px'}}>
                         <PlayersAutoComplete
                             players = {this.props.players}
                             handlePlayerToggle = {this.handlePlayerToggle}
@@ -63,7 +63,7 @@ export class HomeComponent extends Component<Props, State>{
                             ///checked = {this.state.playersCompare.map(player => player.id).sort()}
                         />
                     </Grid>
-                    <Grid item xs>
+                    <Grid item xs={12} sm>
                         <Grid container justify='space-between' alignItems='center'>
                             <Grid item>
                             <FormControl>

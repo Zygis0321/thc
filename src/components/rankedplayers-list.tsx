@@ -5,12 +5,20 @@ import CSS from 'csstype';
 import Skeleton from "@material-ui/lab/Skeleton";
 import { PlayerRanked } from "../services/player-service";
 import { Clear } from "@material-ui/icons";
+import MediaQuery, { useMediaQuery } from 'react-responsive'
+
 
 const listItemStyle: CSS.Properties = {
     boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.2)',
     backgroundColor: 'rgb(255, 255, 255)',
     marginTop: '12px',
     marginBottom: '12px'
+}
+
+const mobileListItemStyle: CSS.Properties = {
+    ...listItemStyle,
+    paddingRight: '5px',
+    paddingLeft: '10px'
 }
 
 const ratingUpStyle: CSS.Properties = {
@@ -26,15 +34,24 @@ const ratingConstantStyle: CSS.Properties = {
     color: '#969696'
 }
 
-const SortableItem = SortableElement(({children}:any) => { 
-    return(
-        <ListItem style={listItemStyle}>{children}</ListItem>
-    )
-});
 
+
+const SortableItem = SortableElement(({children}:any) => { 
+    const isTabletOrMobile = useMediaQuery({ maxWidth: 767 })
+    return(
+        <ListItem style={isTabletOrMobile ? mobileListItemStyle : listItemStyle}>{children}</ListItem>
+        )
+    });
+    
 const SortableList = SortableContainer(({children}:any) => {
-  return <List>{children}</List>;
+    const isTabletOrMobile = useMediaQuery({ maxWidth: 767 })
+    return <List dense={isTabletOrMobile}>{children}</List>;
 });
+const ResponsiveListItem = ({children}:any) => {
+    const isTabletOrMobile = useMediaQuery({ maxWidth: 767 })
+    return <ListItem style={isTabletOrMobile ? {paddingRight:'5px', paddingLeft:'10px'}:undefined}>{children}</ListItem>
+}
+
 
 interface OwnProps{
     playersCompare: PlayerRanked[] 
@@ -43,6 +60,7 @@ interface OwnProps{
 }
 
 type Props = OwnProps
+
 
 export class RankedPlayersList extends Component<Props, {}>{
 
@@ -61,45 +79,45 @@ export class RankedPlayersList extends Component<Props, {}>{
                 }} 
                 useWindowAsScrollContainer
             >
-                <ListItem>
+                <ResponsiveListItem>
                     <Grid item xs = {1}>
-                        <Typography >#</Typography>
+                        <ListItemText >#</ListItemText>
                     </Grid>
-                    <Grid item xs={4}>
-                        <Typography >Name</Typography>
+                    <Grid item xs={3} sm={3} md={4}>
+                        <ListItemText>Name</ListItemText>
 
                     </Grid>
                     <Grid item xs>
-                        <Typography >Rank</Typography>
+                        <ListItemText>Rank</ListItemText>
 
                     </Grid>
                     <Grid item xs>
-                        <Typography >Points</Typography>
+                        <ListItemText >Points</ListItemText>
 
                     </Grid>
-                    <Grid item xs={2}>
-                        <Typography align='justify' >Tournament Points</Typography>
+                    <Grid item xs={3} sm={3} md={2} >  
+                        <ListItemText style={{textAlign:'right'}}>Tournament Points</ListItemText>
                     </Grid>
-                </ListItem>
+                </ResponsiveListItem>
                 {this.props.playersCompare.map((value, index) => (
                 <SortableItem key={index} index={index}>
                     <Grid item xs = {1}>
-                    <Typography><b>{value.pos}</b></Typography>
+                    <ListItemText><b>{value.pos}</b></ListItemText>
 
                     </Grid>
-                    <Grid item xs={4}>
-                        <Typography>{value.name}</Typography>
+                    <Grid item xs={3} sm={3} md={4}>
+                        <ListItemText>{value.name}</ListItemText>
 
                     </Grid>
                     <Grid item xs>
                         {
                             value.lowestScore===-1 ? <Skeleton width={70}/> :(
                             <Grid container direction='row' >
-                                <Box mr={0.5}><Typography>{value.newRank}</Typography></Box>
+                                <Box mr={0.5}><ListItemText>{value.newRank}</ListItemText></Box>
                                 {
-                                    value.rank > value.newRank ? <Typography style={ratingUpStyle}>{`(+${Math.abs(value.rank-value.newRank)})`}</Typography>:
-                                    value.rank === value.newRank ? <Typography style={ratingConstantStyle}>{`(=${value.rank-value.newRank})`}</Typography> :
-                                    <Typography style={ratingDownStyle}>{`(-${Math.abs(value.rank-value.newRank)})`}</Typography>
+                                    value.rank > value.newRank ? <ListItemText style={ratingUpStyle}><b>{`(+${Math.abs(value.rank-value.newRank)})`}</b></ListItemText>:
+                                    value.rank === value.newRank ? <ListItemText style={ratingConstantStyle}><b>{`(=${value.rank-value.newRank})`}</b></ListItemText> :
+                                    <ListItemText style={ratingDownStyle}><b>{`(-${Math.abs(value.rank-value.newRank)})`}</b></ListItemText>
                                 } 
                             </Grid>
                             )
@@ -111,10 +129,10 @@ export class RankedPlayersList extends Component<Props, {}>{
                         {
                             value.lowestScore===-1 ? <Skeleton width={70}/> :(
                                 <Grid container direction='row' >
-                                    <Box mr={0.5}><Typography>{value.newPoints}</Typography></Box>
+                                    <Box mr={0.5}><ListItemText >{value.newPoints}</ListItemText></Box>
                                     {
-                                        value.points < value.newPoints ? <Typography style={ratingUpStyle}>{`(+${Math.abs(value.points-value.newPoints)})`}</Typography>:
-                                        <Typography style={ratingConstantStyle}>{`(=${value.points-value.newPoints})`}</Typography> 
+                                        value.points < value.newPoints ? <ListItemText style={ratingUpStyle}><b>{`(+${Math.abs(value.points-value.newPoints)})`}</b></ListItemText>:
+                                        <ListItemText style={ratingConstantStyle}><b> {`(=${value.points-value.newPoints})`}</b></ListItemText> 
                                     } 
                                 </Grid>
                                 )
@@ -122,18 +140,36 @@ export class RankedPlayersList extends Component<Props, {}>{
                         
 
                     </Grid>
-                    <Grid item xs={2}>
-                        <Grid container direction='row' justify='flex-end'>
-                            <Box  display="flex" alignItems="center" justifyContent="flex-end" marginRight={2} >
-                                <Typography align='right'><b>{value.score}</b></Typography>
-                            </Box>
-                            <Box display="flex" alignItems="center" justifyContent="flex-end">
-                                <IconButton size='small' onClick = {() => this.props.playerRemoved(value.id)} id="buttonRemove">
-                                    <Clear id="buttonRemove"/>
-                                </IconButton>
-                            </Box>
-                        </Grid>
-                    </Grid>
+                      <Grid item xs={3} sm={3} md={2} style={{minWidth: '60px'}}>  
+                         <Grid container direction='row' justify='flex-end' > 
+                            <MediaQuery maxWidth={767}>
+                                {(matches) => 
+                                    matches ? 
+                                    <>
+                                        <Box  display="flex" alignItems="center" justifyContent="flex-end" marginRight='2px' >
+                                            <ListItemText  ><b>{value.score}</b></ListItemText>
+                                        </Box>
+                                        <IconButton size='small' onClick = {() => this.props.playerRemoved(value.id)} id="buttonRemove">
+                                            <Clear fontSize='small' id="buttonRemove"/>
+                                        </IconButton>
+                                        </>
+                                    :
+                                    <>
+                                        <Box  display="flex" alignItems="center" justifyContent="flex-end" marginRight={2} >
+                                            <ListItemText  ><b>{value.score}</b></ListItemText>
+                                        </Box>
+                                        <IconButton size='small' onClick = {() => this.props.playerRemoved(value.id)} id="buttonRemove">
+                                            <Clear id="buttonRemove"/>
+                                        </IconButton>
+                                    </>
+                                    
+                                }
+                            </MediaQuery>
+                            {/* <Box display="flex" alignItems="center" justifyContent="flex-end"> */}
+                                
+                            {/* </Box> */}
+                         </Grid> 
+                     </Grid> 
                 </SortableItem>
                 ))}
             </SortableList>
