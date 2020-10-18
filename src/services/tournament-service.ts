@@ -89,7 +89,7 @@ class TournamentsService {
         let ind = 0
         let score = 0
         let ret:ChartData[] = []
-        for(let i=startTime; i<=endTime; i+=step){
+        for(let i=startTime; i<endTime; i+=step){
             while(ind < points.length && points[ind].date.getTime() <= i){
                 score = points[ind].points
                 ind++

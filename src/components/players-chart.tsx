@@ -84,7 +84,7 @@ export class PlayersChart extends Component<Props, State>{
                                 new Date(Date.UTC(yearRange[1], 0))
                             )}
                         >
-                            <CartesianGrid stroke="#eee" strokeDasharray="5 5"/>
+                            <CartesianGrid stroke="#eee" strokeDasharray="3 3"/>
                             <XAxis dataKey="date" interval={0} angle={30} dx={20} />
                             <YAxis />
                             <Tooltip />
