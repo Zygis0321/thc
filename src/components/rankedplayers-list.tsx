@@ -95,7 +95,7 @@ export class RankedPlayersList extends Component<Props, {}>{
                         <ListItemText >Points</ListItemText>
 
                     </Grid>
-                    <Grid item xs={2} sm={2} md={2} style={{minWidth: '60px'}}>  
+                    <Grid item xs={2} sm={2} md={2} style={{minWidth: '65px'}}>  
                         <ListItemText style={{textAlign:'right', float:'right'}}>Tournament Points</ListItemText>
                     </Grid>
                 </ResponsiveListItem>
@@ -140,7 +140,7 @@ export class RankedPlayersList extends Component<Props, {}>{
                         
 
                     </Grid>
-                      <Grid item xs={2} sm={2}  style={{minWidth: '60px'}}>  
+                      <Grid item xs={2} sm={2}  style={{minWidth: '65px'}}>  
                          <Grid container direction='row' justify='flex-end' > 
                             <MediaQuery maxWidth={tabletMaxWidth}>
                                 {(matches) => 
