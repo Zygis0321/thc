@@ -34,21 +34,21 @@ const ratingConstantStyle: CSS.Properties = {
     color: '#969696'
 }
 
-
+const tabletMaxWidth = 800
 
 const SortableItem = SortableElement(({children}:any) => { 
-    const isTabletOrMobile = useMediaQuery({ maxWidth: 767 })
+    const isTabletOrMobile = useMediaQuery({ maxWidth: tabletMaxWidth })
     return(
         <ListItem style={isTabletOrMobile ? mobileListItemStyle : listItemStyle}>{children}</ListItem>
         )
     });
     
 const SortableList = SortableContainer(({children}:any) => {
-    const isTabletOrMobile = useMediaQuery({ maxWidth: 767 })
+    const isTabletOrMobile = useMediaQuery({ maxWidth: tabletMaxWidth })
     return <List dense={isTabletOrMobile}>{children}</List>;
 });
 const ResponsiveListItem = ({children}:any) => {
-    const isTabletOrMobile = useMediaQuery({ maxWidth: 767 })
+    const isTabletOrMobile = useMediaQuery({ maxWidth: tabletMaxWidth })
     return <ListItem style={isTabletOrMobile ? {paddingRight:'5px', paddingLeft:'10px'}:undefined}>{children}</ListItem>
 }
 
@@ -83,7 +83,7 @@ export class RankedPlayersList extends Component<Props, {}>{
                     <Grid item xs = {1}>
                         <ListItemText >#</ListItemText>
                     </Grid>
-                    <Grid item xs={3} sm={3} md={4}>
+                    <Grid item xs={3} sm={4}>
                         <ListItemText>Name</ListItemText>
 
                     </Grid>
@@ -95,8 +95,8 @@ export class RankedPlayersList extends Component<Props, {}>{
                         <ListItemText >Points</ListItemText>
 
                     </Grid>
-                    <Grid item xs={3} sm={3} md={2} >  
-                        <ListItemText style={{textAlign:'right'}}>Tournament Points</ListItemText>
+                    <Grid item xs={2} sm={2} md={2} style={{minWidth: '60px'}}>  
+                        <ListItemText style={{textAlign:'right', float:'right'}}>Tournament Points</ListItemText>
                     </Grid>
                 </ResponsiveListItem>
                 {this.props.playersCompare.map((value, index) => (
@@ -105,13 +105,13 @@ export class RankedPlayersList extends Component<Props, {}>{
                     <ListItemText><b>{value.pos}</b></ListItemText>
 
                     </Grid>
-                    <Grid item xs={3} sm={3} md={4}>
+                    <Grid item xs={3} sm={4}>
                         <ListItemText>{value.name}</ListItemText>
 
                     </Grid>
                     <Grid item xs>
                         {
-                            value.lowestScore===-1 ? <Skeleton width={70}/> :(
+                            value.lowestScore===-1 ? <Skeleton width={65}/> :(
                             <Grid container direction='row' >
                                 <Box mr={0.5}><ListItemText>{value.newRank}</ListItemText></Box>
                                 {
@@ -127,7 +127,7 @@ export class RankedPlayersList extends Component<Props, {}>{
 
                     <Grid item xs>
                         {
-                            value.lowestScore===-1 ? <Skeleton width={70}/> :(
+                            value.lowestScore===-1 ? <Skeleton width={65}/> :(
                                 <Grid container direction='row' >
                                     <Box mr={0.5}><ListItemText >{value.newPoints}</ListItemText></Box>
                                     {
@@ -140,9 +140,9 @@ export class RankedPlayersList extends Component<Props, {}>{
                         
 
                     </Grid>
-                      <Grid item xs={3} sm={3} md={2} style={{minWidth: '60px'}}>  
+                      <Grid item xs={2} sm={2}  style={{minWidth: '60px'}}>  
                          <Grid container direction='row' justify='flex-end' > 
-                            <MediaQuery maxWidth={767}>
+                            <MediaQuery maxWidth={tabletMaxWidth}>
                                 {(matches) => 
                                     matches ? 
                                     <>
@@ -165,9 +165,6 @@ export class RankedPlayersList extends Component<Props, {}>{
                                     
                                 }
                             </MediaQuery>
-                            {/* <Box display="flex" alignItems="center" justifyContent="flex-end"> */}
-                                
-                            {/* </Box> */}
                          </Grid> 
                      </Grid> 
                 </SortableItem>

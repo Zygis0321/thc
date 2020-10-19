@@ -2,18 +2,20 @@ import React, { Component } from 'react';
 import playersService, { Player, PlayerRanked } from '../services/player-service';
 import { PlayersAutoComplete } from './players-autocomplete';
 import $ from "jquery";
-import { Box, Button, Container, FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { BottomNavigation, BottomNavigationAction, Box, Button, Container, FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 import arrayMove from 'array-move';
 import { Level, levelList } from '../data/scorecalc-data';
-import { ClearAll } from '@material-ui/icons';
+import { ClearAll, GroupAdd, List as ListIcon } from '@material-ui/icons';
 import { RankedPlayersList } from './rankedplayers-list';
 import { RootState } from '../store/combineReducers';
 import { connect } from 'react-redux';
+import MediaQuery, { useMediaQuery } from 'react-responsive';
 
 
 interface State{
     playersCompare: PlayerRanked[] 
-    selectedLevel: string
+    selectedLevel: string,
+    bottomNavVal: number
 }
 
 type Props = ReturnType<typeof mapStateToProps>
@@ -22,7 +24,8 @@ export class HomeComponent extends Component<Props, State>{
 
     public readonly state: State = {
         playersCompare: [],
-        selectedLevel: levelList[0].name
+        selectedLevel: levelList[0].name,
+        bottomNavVal: 0
     }
     
     
@@ -52,54 +55,85 @@ export class HomeComponent extends Component<Props, State>{
 
     render(): React.ReactNode{
         return(
+            <>
             <Container>
-                <Box pt={5}>
-                <Grid container spacing={3}>
-                    <Grid item xs={12}  sm={3} style={{minWidth:'200px'}}>
-                        <PlayersAutoComplete
-                            players = {this.props.players}
-                            handlePlayerToggle = {this.handlePlayerToggle}
-                            playersCompare = {this.state.playersCompare}
-                            ///checked = {this.state.playersCompare.map(player => player.id).sort()}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm>
-                        <Grid container justify='space-between' alignItems='center'>
-                            <Grid item>
-                            <FormControl>
-                                <InputLabel>Level</InputLabel>
-                                <Select
-                                    value={this.state.selectedLevel}
-                                    onChange={this.handleLevelChange}
-                                >
-                                    {levelList.map(level => <MenuItem value={level.name}>{level.name}</MenuItem> )}
-                                </Select>
-                            </FormControl>
+                <MediaQuery maxWidth={599}>
+                {(isMobile) => 
+                <Box pt={2} pb={isMobile ? 6 : 2}>
+                    <Grid container spacing={3}>
+                            <>
+                            {(!isMobile || this.state.bottomNavVal === 0) &&
+                            <Grid item xs={12}  sm={3} style={{minWidth:'200px'}}>
+                                <PlayersAutoComplete
+                                    players = {this.props.players}
+                                    handlePlayerToggle = {this.handlePlayerToggle}
+                                    playersCompare = {this.state.playersCompare}
+                                />
                             </Grid>
-                            <Grid item>
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                startIcon={<ClearAll />}
-                                onClick={this.handleClearAllClick}
-                                style={{float:'right'}}
-                            >
-                                Clear
-                            </Button>
-                            </Grid>
-                        </Grid>
-                        <RankedPlayersList
-                            playersCompare = {this.state.playersCompare}
-                            reorder = {this.reorder}
-                            playerRemoved = {this.playerRemoved}
-                        />
+                            }
+                        
+                            {(!isMobile || this.state.bottomNavVal === 1) &&
+                                <Grid item xs={12} sm>
+                                    <Grid container justify='space-between' alignItems='center'>
+                                        <Grid item>
+                                        <FormControl>
+                                            <InputLabel>Level</InputLabel>
+                                            <Select
+                                                value={this.state.selectedLevel}
+                                                onChange={this.handleLevelChange}
+                                            >
+                                                {levelList.map(level => <MenuItem value={level.name}>{level.name}</MenuItem> )}
+                                            </Select>
+                                        </FormControl>
+                                        </Grid>
+                                        <Grid item>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            startIcon={<ClearAll />}
+                                            onClick={this.handleClearAllClick}
+                                            style={{float:'right'}}
+                                        >
+                                            Clear
+                                        </Button>
+                                        </Grid>
+                                    </Grid>
+                                    <RankedPlayersList
+                                        playersCompare = {this.state.playersCompare}
+                                        reorder = {this.reorder}
+                                        playerRemoved = {this.playerRemoved}
+                                    />
+                                </Grid>
+                            
+                            }
+                            
+                        </>
                     </Grid>
-            
-                </Grid>
-                
                 </Box>
+                }
+            
+                </MediaQuery>
             </Container>
-
+            <MediaQuery maxWidth={599}>
+                <BottomNavigation
+                    value = {this.state.bottomNavVal}
+                    onChange={(e, newValue) => {
+                        this.setState({bottomNavVal: newValue})
+                    }}
+                    style = {{
+                        width:'100%',
+                        position: 'fixed',
+                        bottom: '0',
+                        right:'0',
+                        left:'0',
+                    }}
+                    showLabels
+                >
+                    <BottomNavigationAction label="Select Players" style={{maxWidth:'1000px'}} icon={<GroupAdd/>}/>
+                    <BottomNavigationAction label="Standings" style={{maxWidth:"1000px"}} icon={<ListIcon/>}/>
+                </BottomNavigation>
+            </MediaQuery>
+            </>
         )
     }
 
