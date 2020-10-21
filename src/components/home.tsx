@@ -126,6 +126,8 @@ export class HomeComponent extends Component<Props, State>{
                         bottom: '0',
                         right:'0',
                         left:'0',
+                        boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',
+                        zIndex: 99999
                     }}
                     showLabels
                 >

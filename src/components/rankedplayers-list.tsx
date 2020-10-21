@@ -6,13 +6,15 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import { PlayerRanked } from "../services/player-service";
 import { Clear } from "@material-ui/icons";
 import MediaQuery, { useMediaQuery } from 'react-responsive'
-
+import styles from './styles/playerlist.module.css'
+import zIndex from "@material-ui/core/styles/zIndex";
 
 const listItemStyle: CSS.Properties = {
     boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.2)',
     backgroundColor: 'rgb(255, 255, 255)',
-    marginTop: '12px',
-    marginBottom: '12px'
+    marginTop: '10px',
+    marginBottom: '10px',
+    borderRadius: '7px'
 }
 
 const mobileListItemStyle: CSS.Properties = {
@@ -63,9 +65,11 @@ type Props = OwnProps
 
 
 export class RankedPlayersList extends Component<Props, {}>{
-
+    
     render(): React.ReactNode{
         return(
+            <MediaQuery maxWidth={599}>
+            {(isMobile) => 
             <SortableList 
                 onSortEnd={this.props.reorder} 
                 shouldCancelStart = {(e: any) => {
@@ -78,6 +82,9 @@ export class RankedPlayersList extends Component<Props, {}>{
                     }
                 }} 
                 useWindowAsScrollContainer
+                lockAxis = 'y'
+                pressDelay = {isMobile ? 200 : 0}
+                helperClass = {styles.selected}
             >
                 <ResponsiveListItem>
                     <Grid item xs = {1}>
@@ -100,7 +107,7 @@ export class RankedPlayersList extends Component<Props, {}>{
                     </Grid>
                 </ResponsiveListItem>
                 {this.props.playersCompare.map((value, index) => (
-                <SortableItem key={index} index={index}>
+                <SortableItem key={index} index={index} >
                     <Grid item xs = {1}>
                     <ListItemText><b>{value.pos}</b></ListItemText>
 
@@ -170,6 +177,8 @@ export class RankedPlayersList extends Component<Props, {}>{
                 </SortableItem>
                 ))}
             </SortableList>
+            }
+            </MediaQuery>
         )
     }
 

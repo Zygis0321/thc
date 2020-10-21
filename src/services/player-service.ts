@@ -93,7 +93,7 @@ class PlayersService {
 
         //sum up
         for(let i=0; i<players.length; i++){
-            players[i].score = Math.floor(players[i].score)
+            players[i].score = Math.round(players[i].score - 0.05)
         }
         players[0].score+=10
 
