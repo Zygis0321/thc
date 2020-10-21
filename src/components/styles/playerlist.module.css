@@ -1,0 +1,5 @@
+.selected {
+    border-color: #f50057;
+    border-style: solid;
+    border-width: thin;
+}
