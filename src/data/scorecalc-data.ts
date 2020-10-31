@@ -15,63 +15,59 @@ export const levelList: Level[] = [
 ]
 
 export interface PointsPercentage {
-    appliedFrom: Date,
-    appliedUntil: Date,
     tournamentAge: number,
     percentage: number
 }
 
-export const percentageList: PointsPercentage[] = [
+export const percentageNormalList: PointsPercentage[] = [
     {
-        appliedFrom: new Date(Date.UTC(1111, 0)),
-        appliedUntil: new Date(Date.UTC(3333,0)),
         tournamentAge: 0,
         percentage: 1
     },
     {
-        appliedFrom: new Date(Date.UTC(1111, 0)),
-        appliedUntil: new Date(Date.UTC(2020, 9, 4)),
         tournamentAge: 2,
         percentage: 0.8
     },
     {
-        appliedFrom: new Date(Date.UTC(2020, 9, 5)),
-        appliedUntil: new Date(Date.UTC(2021, 5, 30)),
-        tournamentAge: 2,
-        percentage: 1
-    },
-    {
-        appliedFrom: new Date(Date.UTC(2021, 6, 1)),
-        appliedUntil: new Date(Date.UTC(3333, 0)),
-        tournamentAge: 2,
-        percentage: 0.8
-    },
-    {
-        appliedFrom: new Date(Date.UTC(1111, 0)),
-        appliedUntil: new Date(Date.UTC(3333,0)),
         tournamentAge: 3,
         percentage: 0.6
     },
     {
-        appliedFrom: new Date(Date.UTC(1111, 0)),
-        appliedUntil: new Date(Date.UTC(3333,0)),
         tournamentAge: 4,
         percentage: 0.4
     },
     {
-        appliedFrom: new Date(Date.UTC(1111, 0)),
-        appliedUntil: new Date(Date.UTC(3333,0)),
         tournamentAge: 5,
         percentage: 0.2
     },
     {
-        appliedFrom: new Date(Date.UTC(1111, 0)),
-        appliedUntil: new Date(Date.UTC(3333,0)),
         tournamentAge: 6,
         percentage: 0
     },
 ]
-export const ruleChangeDates: Date[] = [
+export const percentageExceptionList: PointsPercentage[] = [
+    {
+        tournamentAge: 0,
+        percentage: 1
+    },
+    {
+        tournamentAge: 3,
+        percentage: 0.6
+    },
+    {
+        tournamentAge: 4,
+        percentage: 0.4
+    },
+    {
+        tournamentAge: 5,
+        percentage: 0.2
+    },
+    {
+        tournamentAge: 6,
+        percentage: 0
+    },
+]
+export const exceptionInterval: Date[] = [
     new Date(Date.UTC(2020, 9, 5)),
     new Date(Date.UTC(2021, 6, 1))
 ]

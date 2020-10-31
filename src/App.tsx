@@ -3,13 +3,17 @@ import { BrowserRouter as Router, HashRouter } from 'react-router-dom';
 import { Route } from 'react-router';
 import logo from './logo.svg';
 import './App.css';
-import { Home } from './components/home';
+import { Ranker } from './components/ranker';
 import playersService, { Player } from './services/player-service';
 import { AnyAction, Dispatch } from 'redux';
-import { updatePlayers } from './store/players/player-actions';
+import { updatePlayers, updatePlayersState } from './store/players/player-actions';
 import { connect } from 'react-redux';
 import $ from "jquery";
 import { Progress } from './components/progress';
+import { NavBar } from './components/navbar';
+import tournamentsService from './services/tournament-service';
+import { PlayersState } from './store/players/player-types';
+import { Home } from './components/home';
 
 type Props = ReturnType<typeof mapDispatchToProps> 
 
@@ -19,7 +23,10 @@ class AppComponent extends Component<Props, {}> {
     $.ajax('https://serene-crag-74633.herokuapp.com/all')
       .then(res => {
           const players:Player[] =  playersService.parseContent(res)
-          this.props.updatePlayers(players)
+          this.props.updatePlayersState({
+            prefScores: playersService.getPlayerScores(players),
+            players
+          })
       })
       .catch(() => {
           console.log("error")
@@ -31,15 +38,18 @@ class AppComponent extends Component<Props, {}> {
   render () {
     return (
       <HashRouter>
-        <Route exact path='/' component={Home} />
-        <Route exact path='/progress' component={Progress} />
+        <NavBar>
+          <Route exact path='/' component={Home} />
+          <Route exact path='/ranker' component={Ranker} />
+          <Route exact path='/players' component={Progress} />
+        </NavBar>
       </HashRouter>
     );
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>({
-  updatePlayers: (players: Player[]) => dispatch(updatePlayers(players))
+  updatePlayersState: (playersState: PlayersState) => dispatch(updatePlayersState(playersState))
 });
 
 const App = connect(null, mapDispatchToProps)(AppComponent)
