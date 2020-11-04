@@ -3,16 +3,42 @@ import MenuIcon from '@material-ui/icons/Menu';
 import CSS from 'csstype';
 import React from "react";
 import MediaQuery from "react-responsive";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const navBarItemStyle:CSS.Properties = {
     margin:'10px',
     alignSelf:'center'
 }
 
-interface State{
-    opened: boolean    
+const buttonSelectedStyle:CSS.Properties = {
+    backgroundColor: '#dddddd'
 }
+
+
+interface State{
+    opened: boolean
+}
+
+interface navItem{
+    name: string
+    url: string
+}
+
+const navList: navItem[] = [
+    {
+        name: 'Home',
+        url: '/'
+    },
+    {
+        name: 'Players',
+        url: '/players'
+    },
+    {
+        name: 'Ranker',
+        url: '/ranker'
+    },
+
+]
 
 export class NavBar extends React.Component<{},State>{
     public readonly state:State = {
@@ -30,15 +56,13 @@ export class NavBar extends React.Component<{},State>{
                         </Typography>
                         <Divider/>
                         <List style={{width:'200px'}}>
-                            <ListItem component={(props) => <Link to='/' {...props}/>} onClick={this.toggleDrawer} button>
-                                <ListItemText primary='Home'/>
-                            </ListItem>
-                            <ListItem component={(props) => <Link to='/players' {...props}/>} onClick={this.toggleDrawer} button>
-                                <ListItemText primary='Players'/>
-                            </ListItem>
-                            <ListItem component={(props) => <Link to='/ranker' {...props}/>} onClick={this.toggleDrawer} button>
-                                <ListItemText primary='Ranker'/>
-                            </ListItem>
+                            {
+                                navList.map(item => 
+                                    <ListItem component={(props) => <NavLink to={item.url} exact activeStyle={buttonSelectedStyle} {...props}/>} onClick={this.toggleDrawer} button>
+                                        <ListItemText primary={item.name}/>
+                                    </ListItem>
+                                )
+                            }
                         </List>
                     </Drawer>
                     </>
@@ -60,21 +84,17 @@ export class NavBar extends React.Component<{},State>{
                         </Typography>
                     </div>
                     {!isMobile && <div style={navBarItemStyle}>
-                        <Button component={(props) => <Link to='/' {...props} />} color="inherit" style={{marginLeft:'10px'}}>Home</Button>
-                        <Button 
-                            component={(props) => <Link to='/players' {...props} />} 
-                            color="inherit" 
-                            style={{marginLeft:'10px'}}
-                        >
-                            Players
-                        </Button>
-                        <Button 
-                            component={(props) => <Link to='/ranker' {...props}/>} 
-                            color="inherit" 
-                            style={{marginLeft:'10px'}}
-                        >
-                            Ranker
-                        </Button>
+                        {
+                            navList.map(item => 
+                                <Button 
+                                    component={(props) => <NavLink to={item.url} exact activeStyle={buttonSelectedStyle} {...props} />} 
+                                    color="inherit" 
+                                    style={{marginLeft:'10px',  }}
+                                >
+                                    {item.name}
+                                </Button>
+                            )
+                        }
                     </div>}
                 </AppBar>
                 <Container>

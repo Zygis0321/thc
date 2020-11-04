@@ -32,7 +32,7 @@ function PlayerContent(props: {player: Player, withFlag:boolean}){
             <div style={{display:'flex', marginBottom:'12px'}}>
                 {props.withFlag && <img 
                 style={{alignSelf:'center',width:'100px',objectFit:'fill', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',}}
-                    src = {require(`../data/flags/${getCountry(props.player.nation).alpha2code.toLowerCase()}.svg`)}
+                    src = {`http://purecatamphetamine.github.io/country-flag-icons/3x2/${getCountry(props.player.nation).alpha2code}.svg`}
                 />}
                 <Typography variant="h5" align='center' style = {{margin:'auto'}} color="secondary">
                     {props.player.name}
@@ -107,7 +107,7 @@ export default function PlayerCard(props: Props){
             {!isMobile && <img 
             style={{width:'345px', flex:'0 0 345px', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',}}
             //height="100%"
-                src = {require(`../data/flags/${getCountry(props.player.nation).alpha2code.toLowerCase()}.svg`)}
+                src = {`http://purecatamphetamine.github.io/country-flag-icons/3x2/${getCountry(props.player.nation).alpha2code}.svg`}
             />}
         </Card>
     )
