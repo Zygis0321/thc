@@ -1,15 +1,22 @@
-import { Player } from "../../services/player-service";
-import { UpdatePlayersAction, UPDATE_PLAYERS } from "./player-types";
+import { PlayersActionTypes, PlayersState, UPDATE_PLAYERS, UPDATE_PLAYERS_STATE } from "./player-types";
 
-const initialState: Player[] = []
+const initialState: PlayersState = {
+    players: [],
+    prefScores: []
+}
 
 export function playersReducer(
     state = initialState,
-    action: UpdatePlayersAction
+    action: PlayersActionTypes
 
-): Player[] {
+): PlayersState {
     switch(action.type){
         case UPDATE_PLAYERS:
+            return{
+                ...state,
+                players: action.payload
+            }
+        case UPDATE_PLAYERS_STATE:
             return action.payload
         default:
             return state

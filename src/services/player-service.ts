@@ -21,9 +21,9 @@ export interface PlayerRanked extends Player{
 
 class PlayersService {
 
-    private prefScores:number[] = []
+    //private prefScores:number[] = []
 
-    rankPlayers = (players: PlayerRanked[]): PlayerRanked[] => {
+    rankPlayers = (players: PlayerRanked[], prefScores:number[]): PlayerRanked[] => {
         for(let i=0; i<players.length; i++){
             if(players[i].lowestScore === -1){
                 continue
@@ -35,13 +35,13 @@ class PlayersService {
                 continue
             }
 
-            let rank: number = this.prefScores[players[i].newPoints + 1] + 1
+            let rank: number = prefScores[players[i].newPoints + 1] + 1
             for(let j=0; j<players.length; j++){
                 if(players[j].lowestScore === -1)continue
                 if(players[j].points>players[i].newPoints)rank--
                 if(players[j].newPoints>players[i].newPoints)rank++
             }
-            players[i].rank = this.prefScores[players[i].points + 1] + 1
+            players[i].rank = prefScores[players[i].points + 1] + 1
             players[i].newRank = rank
         }
 
@@ -138,15 +138,16 @@ class PlayersService {
         return ret
     }
 
-    setPlayerScores(players: Player[]): void{
-        this.prefScores = new Array(6005).fill(0)
+    getPlayerScores(players: Player[]): number[]{
+        let prefScores:number[] = new Array(6005).fill(0)
         for(let i=0; i<players.length; i++){
-            this.prefScores[players[i].points]++;
+            prefScores[players[i].points]++;
         }
         
         for(let i=6000; i>=0; i--){
-            this.prefScores[i]+=this.prefScores[i+1]
+            prefScores[i]+=prefScores[i+1]
         }
+        return prefScores
 
     }
 

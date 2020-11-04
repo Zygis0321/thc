@@ -1,5 +1,5 @@
 {
-  "homepage": "http://zygis0321.github.io/thc",
+  "homepage": "http://zygis0321.github.io/",
   "name": "thc",
   "version": "0.1.0",
   "private": true,
@@ -26,6 +26,7 @@
     "jquery": "^3.5.1",
     "match-sorter": "^4.2.1",
     "react": "^16.13.1",
+    "react-country-flag": "^2.3.0",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
     "react-responsive": "^8.1.0",

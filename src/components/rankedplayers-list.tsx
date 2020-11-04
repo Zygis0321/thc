@@ -1,13 +1,12 @@
-import { Box, Grid, IconButton, List, ListItem, ListItemText, Typography } from "@material-ui/core";
-import React, { Component } from "react";
-import { SortableElement, SortableContainer } from "react-sortable-hoc";
-import CSS from 'csstype';
-import Skeleton from "@material-ui/lab/Skeleton";
-import { PlayerRanked } from "../services/player-service";
+import { Box, Grid, IconButton, List, ListItem, ListItemText } from "@material-ui/core";
 import { Clear } from "@material-ui/icons";
-import MediaQuery, { useMediaQuery } from 'react-responsive'
-import styles from './styles/playerlist.module.css'
-import zIndex from "@material-ui/core/styles/zIndex";
+import Skeleton from "@material-ui/lab/Skeleton";
+import CSS from 'csstype';
+import React, { Component } from "react";
+import MediaQuery, { useMediaQuery } from 'react-responsive';
+import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import { PlayerRanked } from "../services/player-service";
+import styles from './styles/playerlist.module.css';
 
 const listItemStyle: CSS.Properties = {
     boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.2)',

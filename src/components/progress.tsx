@@ -1,92 +1,194 @@
-import { CircularProgress, Slider, TextField, Typography } from '@material-ui/core';
-import Box from '@material-ui/core/Box/Box';
-import Button from '@material-ui/core/Button/Button';
-import Container from '@material-ui/core/Container/Container';
+import { CircularProgress, TextField, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid/Grid';
-import { ClearAll, ThreeSixty } from '@material-ui/icons';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import $ from "jquery";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { percentageExceptionList, percentageNormalList } from '../data/scorecalc-data';
 import { Player } from '../services/player-service';
-import tournamentsService, { PlayerWithTournaments, PointsByDate, Tournament } from '../services/tournament-service';
+import tournamentsService, { PointsByDate } from '../services/tournament-service';
 import { RootState } from '../store/combineReducers';
-import { PlayersAutoComplete } from './players-autocomplete';
-import $ from "jquery";
-import { RankedPlayersList } from './rankedplayers-list';
+import PlayerCard from './player-card';
 import { PlayersChart } from './players-chart';
 
 type Props = ReturnType<typeof mapStateToProps>
 
 interface State{
-    playerPoints: PointsByDate[]
+    playerPointsNormal1: PointsByDate[]
+    playerPointsException1: PointsByDate[]
+    playerPointsNormal2: PointsByDate[]
+    playerPointsException2: PointsByDate[]
+    playerName1?: string
+    playerName2?: string
+    
+    playerUpdating: boolean
+    selectedPlayer: Player | null
+}
+
+interface PlayerPoints{
+    normal: PointsByDate[],
+    exception: PointsByDate[]
 }
 
 export class ProgressComponent extends Component<Props, State>{
 
     public readonly state:State = {
-        playerPoints: []
+        playerPointsNormal1: [],
+        playerPointsException1: [],
+        playerPointsNormal2: [],
+        playerPointsException2: [],
+        
+        playerUpdating: false,
+        selectedPlayer: null
     }
+
+    
+    
 
     render(): React.ReactNode{
         return(
-            <Container>
-                <Box pt={5}>
                 <Grid container spacing={3}>
-                        <Autocomplete
-                            options = {this.props.players}
-                            getOptionLabel = {(option) => option.name}
-                            renderInput = {(params) => 
-                                <TextField {...params} label="Choose a player" />
+                    <Grid item xs={12} sm={5} md={4}>
+                        <Grid container spacing={3}>
+
+                        <Grid item xs={12}>
+                            <Autocomplete
+                                options = {this.props.players}
+                                getOptionLabel = {(option) => option.name}
+                                renderInput = {(params) => 
+                                    <TextField {...params} label="Select a player" variant = "outlined" />
+                                }
+                                filterOptions = {createFilterOptions({
+                                    limit: 100
+                                })}
+                                onChange = {this.handlePlayerChange}
+                                loading = {this.props.players.length === 0}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Autocomplete
+                                options = {this.props.players}
+                                getOptionLabel = {(option) => option.name}
+                                renderInput = {(params) => 
+                                    <TextField {...params} label="Select a player to compare" />
+                                }
+                                filterOptions = {createFilterOptions({
+                                    limit: 100
+                                })}
+                                onChange = {this.handlePlayerCompareChange}
+                                loading = {this.props.players.length === 0}
+                            />
+                        </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs sm md>
+                        <PlayerCard player={this.state.selectedPlayer}/>
+                    </Grid>
+                    <Grid item xs = {12}>
+                        <div style={{position: "relative"}}>
+                            {
+                                <div style={(this.state.playerUpdating || this.state.playerName1 === undefined) ? {filter:"blur(5px)"} : undefined }>
+                                    
+                                    <PlayersChart 
+                                        playerPointsNormal1={this.state.playerPointsNormal1} 
+                                        playerPointsException1={this.state.playerPointsException1}
+                                        playerPointsNormal2={this.state.playerPointsNormal2} 
+                                        playerPointsException2={this.state.playerPointsException2}
+                                        playerName1={this.state.playerName1}
+                                        playerName2={this.state.playerName2}
+                                    />
+                                </div>
                             }
-                            filterOptions = {createFilterOptions({
-                                limit: 100
-                            })}
-                            onChange = {this.handlePlayerChange}
-                        />
-                        {/*<Autocomplete
-                            options = {this.props.players}
-                            getOptionLabel = {(option) => option.name}
-                            renderInput = {(params) => 
-                                <TextField {...params} label="Select a player to compare" />
+                            {
+                                (this.state.playerUpdating || this.state.playerName1 === undefined) && 
+                                <div style={{
+                                    position:"absolute", 
+                                    width:"100%", 
+                                    height:"500px", 
+                                    top:0, 
+                                    left:0, 
+                                    display:'flex', 
+                                    justifyContent:"center", 
+                                    alignItems:'center'
+                                }}>
+                                    {this.state.playerName1 !== undefined ?
+
+                                        <CircularProgress  />
+                                        :
+                                        <Typography>
+                                            Select a player to load chart
+                                        </Typography>
+                                    }
+                                </div>
                             }
-                            filterOptions = {createFilterOptions({
-                                limit: 100
-                            })}
-                        />*/}
-                        {this.state.playerPoints.length ? 
-                            <PlayersChart playerPoints={this.state.playerPoints} /> :
-                            <CircularProgress/>
-                        }
+                        </div>
+                    </Grid>
                 </Grid>
-                
-                </Box>
-            </Container>
         )
 
     }
+
+    
     
     private readonly handlePlayerChange = (event: any, newValue: Player|null) =>{
-        if(newValue === null){
-            this.setState({playerPoints: []})
-        }
-        else{
-            $.getJSON('https://serene-crag-74633.herokuapp.com/tournaments/'+newValue.id)
-            .then(res => {
-                this.setState({
-                    playerPoints: tournamentsService.getPointsByDate(res)
+        this.setState({playerName1: newValue?.name, selectedPlayer: newValue})
+        this.getPlayerPoints(newValue).then((value) => {
+            this.setState({
+                playerPointsNormal1: value.normal,
+                playerPointsException1: value.exception
+            })
+            
+        })
+    }
+    private readonly handlePlayerCompareChange = (event: any, newValue: Player|null) =>{
+        this.getPlayerPoints(newValue).then((value) => {
+            this.setState({
+                playerPointsNormal2: value.normal,
+                playerPointsException2: value.exception,
+                playerName2: newValue?.name
+            })
+        })
+    }
+
+
+    private readonly getPlayerPoints = (newValue: Player|null): Promise<PlayerPoints> =>{
+        var promise = new Promise<PlayerPoints>((resolve, reject) => {
+            if(newValue === null){
+                resolve( {
+                    normal: [],
+                    exception: []
                 })
-            })
-            .catch(() => {
-                console.log("error")
-            })
-        }
+            }
+            else{
+                this.setState({playerUpdating: true})
+                $.getJSON('https://serene-crag-74633.herokuapp.com/tournaments/'+newValue.id)
+                .then(res => {
+                    resolve({
+                        normal: tournamentsService.getPointsByDate(res, percentageNormalList),
+                        exception: tournamentsService.getPointsByDate(res, percentageExceptionList)
+                    })
+                })
+                .catch(() => {
+                    console.log("error")
+                    resolve( {
+                        normal: [],
+                        exception: []
+                    })
+                })
+                .always(() => {
+                    this.setState({playerUpdating: false})
+                })
+            }
+
+        })
+        return promise
     }
 
 }
 
 const mapStateToProps = (state: RootState) =>({
-    players: state.players
+    players: state.players.players
 });
 
 const Progress = connect(mapStateToProps)(ProgressComponent)
-export {Progress}
+export { Progress };

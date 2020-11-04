@@ -1,11 +1,9 @@
 import { Box, Checkbox, InputAdornment, List, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
-import InputBase from '@material-ui/core/InputBase';
 import TextField from '@material-ui/core/TextField';
-import { Search, SearchOutlined } from '@material-ui/icons';
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import { Search } from '@material-ui/icons';
 import Skeleton from '@material-ui/lab/Skeleton';
 import React, { Component } from 'react';
-import { Player, PlayerRanked } from '../services/player-service';
+import { Player } from '../services/player-service';
 //import matchSorter from 'match-sorter'
 
 interface OwnProps{
