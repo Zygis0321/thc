@@ -40,13 +40,20 @@ const tabletMaxWidth = 800
 const SortableItem = SortableElement(({children}:any) => { 
     const isTabletOrMobile = useMediaQuery({ maxWidth: tabletMaxWidth })
     return(
-        <ListItem style={isTabletOrMobile ? mobileListItemStyle : listItemStyle}>{children}</ListItem>
+        <ListItem 
+        
+            style={isTabletOrMobile ? mobileListItemStyle : listItemStyle}
+            onMouseEnter={ (): void => { if (document.body.style.cursor !== 'grabbing') document.body.style.cursor = 'grab' } }
+            onMouseLeave={ (): void => { if (document.body.style.cursor === 'grab') document.body.style.cursor = '' } }
+        >
+            {children}
+        </ListItem>
         )
     });
     
 const SortableList = SortableContainer(({children}:any) => {
     const isTabletOrMobile = useMediaQuery({ maxWidth: tabletMaxWidth })
-    return <List dense={isTabletOrMobile}>{children}</List>;
+    return <List dense={isTabletOrMobile} style={{paddingTop:0}}>{children}</List>;
 });
 const ResponsiveListItem = ({children}:any) => {
     const isTabletOrMobile = useMediaQuery({ maxWidth: tabletMaxWidth })
@@ -70,7 +77,11 @@ export class RankedPlayersList extends Component<Props, {}>{
             <MediaQuery maxWidth={599}>
             {(isMobile) => 
             <SortableList 
-                onSortEnd={this.props.reorder} 
+                onSortStart={() => (document.body.style.cursor = 'grabbing')}
+                onSortEnd={({oldIndex, newIndex}: any) => {
+                    document.body.style.cursor = 'default'
+                    this.props.reorder({oldIndex, newIndex})
+                }} 
                 shouldCancelStart = {(e: any) => {
                     if(
                         e.target.id == "buttonRemove" || 

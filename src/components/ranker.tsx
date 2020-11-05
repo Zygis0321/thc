@@ -1,4 +1,4 @@
-import { BottomNavigation, BottomNavigationAction, Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { BottomNavigation, BottomNavigationAction, Box, Button, Divider, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import { ClearAll, GroupAdd, List as ListIcon } from '@material-ui/icons';
 import arrayMove from 'array-move';
 import $ from "jquery";
@@ -33,10 +33,6 @@ export class RankerComponent extends Component<Props, {}>{
             playersCompare: this.recalc(arrayMove(this.props.rankerState.playersCompare, oldIndex, newIndex), this.props.rankerState.selectedLevel)
         })
       };
-
-    public componentDidMount(): void{
-
-    }
 
     render(): React.ReactNode{
         return(
@@ -82,6 +78,10 @@ export class RankerComponent extends Component<Props, {}>{
                                         </Button>
                                         </Grid>
                                     </Grid>
+                                    <Typography align='right' variant='body2'style={{marginTop:20, marginRight:10}} color="textSecondary">
+                                        <i>{isMobile ? "*Hold and drag to reorder" :
+                                            "*Drag to reorder"}</i>
+                                    </Typography>
                                     <RankedPlayersList
                                         playersCompare = {this.props.rankerState.playersCompare}
                                         reorder = {this.reorder}
