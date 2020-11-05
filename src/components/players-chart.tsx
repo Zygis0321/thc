@@ -24,7 +24,7 @@ interface State{
 export class PlayersChart extends Component<Props, State>{
 
     public readonly state:State = {
-        yearRange: [2000, new Date().getFullYear() + 7],
+        yearRange: [2000, 2027],
     }
 
     public readonly player2Color: string = "#8884d8"
@@ -43,7 +43,7 @@ export class PlayersChart extends Component<Props, State>{
 
     getYearRange(): number[]{
         if(this.props.playerPointsNormal1.length === 0){
-            return [2000, new Date().getFullYear() + 7]
+            return [2000, 2027]
         }
         return [
             this.props.playerPointsNormal1[0].date.getUTCFullYear(),

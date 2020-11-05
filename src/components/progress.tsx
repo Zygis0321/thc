@@ -4,6 +4,7 @@ import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete
 import $ from "jquery";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { percentageExceptionList, percentageNormalList } from '../data/scorecalc-data';
 import { Player } from '../services/player-service';
 import tournamentsService, { PointsByDate } from '../services/tournament-service';
@@ -11,7 +12,11 @@ import { RootState } from '../store/combineReducers';
 import PlayerCard from './player-card';
 import { PlayersChart } from './players-chart';
 
-type Props = ReturnType<typeof mapStateToProps>
+interface Params{
+    id: string
+}
+
+type Props = ReturnType<typeof mapStateToProps> & RouteComponentProps<Params>
 
 interface State{
     playerPointsNormal1: PointsByDate[]
@@ -42,31 +47,66 @@ export class ProgressComponent extends Component<Props, State>{
         selectedPlayer: null
     }
 
-    
+    componentDidMount(){
+        if(this.props.match.params.id !== undefined && this.props.players.length){
+            this.handlePlayerChange(undefined, this.getPlayerValue())
+        }
+    }
+
+    componentDidUpdate(prevProps: Props){
+        if(prevProps.players.length !== this.props.players.length && this.props.match.params.id !== undefined ||
+           prevProps.match.params.id !== this.props.match.params.id && this.props.players.length){
+            this.handlePlayerChange(undefined, this.getPlayerValue())
+        }
+    }
+
+
+    getPlayerValue(): Player | null{
+        let player = this.props.players.find(player => player.id === this.props.match.params.id)
+        if(player === undefined){
+            return null
+        }
+
+        return player
+    }
     
 
     render(): React.ReactNode{
         return(
+            (this.props.match.params.id !== undefined && this.props.players.length === 0) 
+            ? 
+            <div style={{
+                height:'calc(100vh - 100px)',
+                display:'flex', 
+                justifyContent:"center", 
+                alignItems:'center'}}
+            >
+                <CircularProgress style = {{alignSelf:'center'}}/>
+            </div>
+            :
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={5} md={4}>
                         <Grid container spacing={3}>
 
                         <Grid item xs={12}>
                             <Autocomplete
+                                blurOnSelect
                                 options = {this.props.players}
                                 getOptionLabel = {(option) => option.name}
+                                value = {this.state.selectedPlayer}
                                 renderInput = {(params) => 
                                     <TextField {...params} label="Select a player" variant = "outlined" />
                                 }
                                 filterOptions = {createFilterOptions({
                                     limit: 100
                                 })}
-                                onChange = {this.handlePlayerChange}
+                                onChange = {this.handleValueChange}
                                 loading = {this.props.players.length === 0}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <Autocomplete
+                                blurOnSelect
                                 options = {this.props.players}
                                 getOptionLabel = {(option) => option.name}
                                 renderInput = {(params) => 
@@ -129,7 +169,14 @@ export class ProgressComponent extends Component<Props, State>{
     }
 
     
-    
+    private readonly handleValueChange = (event: any, newValue: Player|null) => {
+        if(newValue === null){
+            this.props.history.push(`/players`)
+        }
+        else{
+            this.props.history.push(`/players/${newValue.id}`)
+        }
+    }
     private readonly handlePlayerChange = (event: any, newValue: Player|null) =>{
         this.setState({playerName1: newValue?.name, selectedPlayer: newValue})
         this.getPlayerPoints(newValue).then((value) => {
@@ -183,7 +230,6 @@ export class ProgressComponent extends Component<Props, State>{
         })
         return promise
     }
-
 }
 
 const mapStateToProps = (state: RootState) =>({
@@ -191,4 +237,4 @@ const mapStateToProps = (state: RootState) =>({
 });
 
 const Progress = connect(mapStateToProps)(ProgressComponent)
-export { Progress };
+export {Progress};

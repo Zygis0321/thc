@@ -58,7 +58,7 @@ export class NavBar extends React.Component<{},State>{
                         <List style={{width:'200px'}}>
                             {
                                 navList.map(item => 
-                                    <ListItem component={(props) => <NavLink to={item.url} exact activeStyle={buttonSelectedStyle} {...props}/>} onClick={this.toggleDrawer} button>
+                                    <ListItem component={(props) => <NavLink to={item.url} exact={item.url==='/'} activeStyle={buttonSelectedStyle} {...props}/>} onClick={this.toggleDrawer} button>
                                         <ListItemText primary={item.name}/>
                                     </ListItem>
                                 )
@@ -87,7 +87,7 @@ export class NavBar extends React.Component<{},State>{
                         {
                             navList.map(item => 
                                 <Button 
-                                    component={(props) => <NavLink to={item.url} exact activeStyle={buttonSelectedStyle} {...props} />} 
+                                    component={(props) => <NavLink to={item.url} exact={item.url==='/'} activeStyle={buttonSelectedStyle} {...props} />} 
                                     color="inherit" 
                                     style={{marginLeft:'10px',  }}
                                 >

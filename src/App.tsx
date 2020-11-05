@@ -41,7 +41,7 @@ class AppComponent extends Component<Props, {}> {
         <NavBar>
           <Route exact path='/' component={Home} />
           <Route exact path='/ranker' component={Ranker} />
-          <Route exact path='/players' component={Progress} />
+          <Route exact path= '/players/:id?' component={Progress} />
         </NavBar>
       </HashRouter>
     );

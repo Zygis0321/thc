@@ -1,10 +1,13 @@
-import { Button, CardActions, CardContent, Typography } from "@material-ui/core";
+import { Button, CardActionArea, CardActions, CardContent, IconButton, Typography } from "@material-ui/core";
 import Card from '@material-ui/core/Card';
+import { ArrowForward } from "@material-ui/icons";
 import { Skeleton } from "@material-ui/lab";
 import React from "react";
 import { useMediaQuery } from "react-responsive";
+import { useHistory } from "react-router";
 import { getCountry } from "../services/country-service";
 import { Player } from "../services/player-service";
+import Flag from 'react-world-flags'
 
 interface OwnProps{
     player: Player | null
@@ -19,29 +22,39 @@ function PlayerDetail(props: {text: string, value: string, bold?: boolean}){
             <Typography align='right' style={{float:'right'}}>
                 {props.bold === true ? <b>{props.value}</b> : props.value}
             </Typography>
-            <Typography color="textSecondary" style={{fontWeight:'lighter'}}>
+            <Typography color="textSecondary">
                 {props.text}
             </Typography>
         </>
     )
 }
 
-function PlayerContent(props: {player: Player, withFlag:boolean}){
+function PlayerContent(props: {player: Player, withFlag:boolean, homePage?:boolean}){
     return(
-        <CardContent >
-            <div style={{display:'flex', marginBottom:'12px'}}>
-                {props.withFlag && <img 
-                style={{alignSelf:'center',width:'100px',objectFit:'fill', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',}}
-                    src = {`http://purecatamphetamine.github.io/country-flag-icons/3x2/${getCountry(props.player.nation).alpha2code}.svg`}
+        <CardContent style={props.homePage===true ? undefined :{paddingBottom:4}}>
+            <div style={{display:'flex', marginBottom: props.homePage===true ? '0px':'12px'}}>
+                {props.withFlag && <Flag 
+                    style={{alignSelf:'center', marginRight:'12px',width: props.homePage===true ? '60px':'90px',objectFit:'fill', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',}}
+                    alt = {getCountry(props.player.nation).name}
+                    code={getCountry(props.player.nation).alpha2code.toLowerCase()}
                 />}
-                <Typography variant="h5" align='center' style = {{margin:'auto'}} color="secondary">
+                <Typography variant={props.homePage===true ? 'h6' : "h5"} align='center' style = {{margin:'auto'}} color={props.homePage===true?'textPrimary':"secondary"}>
                     {props.player.name}
                 </Typography>
+                {props.homePage===true &&
+                    <IconButton >
+                        <ArrowForward fontSize='large'/>
+                    </IconButton>
+                }
             </div>
-            <PlayerDetail text='Club' value={props.player.club} />
-            <PlayerDetail text='Rank' value={props.player.rank.toString()} bold/>
-            <PlayerDetail text='Points' value={props.player.points.toString()} bold/>
-            <PlayerDetail text='Player Value' value={props.player.value.toString()}/>
+            {props.homePage!==true &&
+                <>
+                    <PlayerDetail text='Club' value={props.player.club} />
+                    <PlayerDetail text='Rank' value={props.player.rank.toString()} bold/>
+                    <PlayerDetail text='Points' value={props.player.points.toString()} bold/>
+                    <PlayerDetail text='Player Value' value={props.player.value.toString()}/>
+                </>
+            }
             
         </CardContent>
     )
@@ -49,14 +62,11 @@ function PlayerContent(props: {player: Player, withFlag:boolean}){
 function PlayerSkeleton(){
     return(
         <CardContent >
-            <div style={{display:'flex', marginBottom:'12px'}}>
-                <div style={{alignSelf:'center'}}><Skeleton variant='rect' width={100} height={66} /></div>
-                <div style={{margin:'auto'}}><Skeleton variant='text' width='150px' height={40}/></div>
+            <div style={{display:'flex'}}>
+                <div style={{alignSelf:'center'}}><Skeleton variant='rect' width={60} height={40} /></div>
+                <div style={{margin:'auto'}}><Skeleton variant='text' width='120px' height={30}/></div>
+                <div style={{alignSelf:'center'}}><IconButton><ArrowForward fontSize='large'/></IconButton></div>
             </div>
-            <Skeleton variant='text' height={25}/>
-            <Skeleton variant='text' height={25}/>
-            <Skeleton variant='text' height={25}/>
-            <Skeleton variant='text' height={25}/>
             
         </CardContent>
     )
@@ -64,14 +74,19 @@ function PlayerSkeleton(){
 
 
 export function PlayerHomeCard(props: {player?: Player}){
+    let history = useHistory()
+    function PlayerClicked(playerId?: string){
+        if(playerId==undefined)return
+        history.push(`/players/${playerId}`)
+    }
     return(
         <Card style = {{width:'100%', height:'100%'}}>
-            {/* <CardActionArea> */}
+            <CardActionArea onClick={() => PlayerClicked(props.player?.id)} >
                 {
                     props.player === undefined ? <PlayerSkeleton/> :
-                    <PlayerContent player={props.player} withFlag />
+                    <PlayerContent player={props.player} withFlag homePage/>
                 }
-            {/* </CardActionArea> */}
+            </CardActionArea>
         </Card>
 
     )
@@ -95,19 +110,17 @@ export default function PlayerCard(props: Props){
                             <Button 
                                 size="small" 
                                 color="primary"
-                                onClick={() => {
-                                    if(props.player !== null)
-                                        window.open( `https://stiga.trefik.cz/ithf/ranking/player.aspx?ID=${props.player.id}`, '_blank')
-                                }}
+                                href =  {`https://stiga.trefik.cz/ithf/ranking/player.aspx?ID=${props.player.id}`}
+                                target = '_blank'
                             >
                                 Learn More
                             </Button>
                         </CardActions>
                     </div>
-            {!isMobile && <img 
-            style={{width:'345px', flex:'0 0 345px', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',}}
-            //height="100%"
-                src = {`http://purecatamphetamine.github.io/country-flag-icons/3x2/${getCountry(props.player.nation).alpha2code}.svg`}
+            {!isMobile && <Flag 
+                style={{width:'345px', flex:'0 0 345px', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',}}
+                alt = {getCountry(props.player.nation).name}
+                code={getCountry(props.player.nation).alpha2code.toLowerCase()}
             />}
         </Card>
     )

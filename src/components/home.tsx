@@ -19,7 +19,7 @@ function getSkeletons(count: number){
 export function Home(){
     
     const isMobile = useMediaQuery({maxWidth:'599px'})
-    const [playerCount, setPlayerCount] = useState(5)
+    const [playerCount, setPlayerCount] = useState(6)
 
     const players = useSelector(
         (state: RootState) => 
@@ -66,7 +66,7 @@ export function Home(){
                     color='primary' 
                     onClick={() => {
                         console.log(isMobile)
-                        setPlayerCount(playerCount+5)
+                        setPlayerCount(playerCount+6)
                     }}
                     style={{width:'200px'}}
                 >

@@ -21,6 +21,7 @@
     "@types/react-router": "^5.1.8",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-window": "^1.8.2",
+    "@types/react-world-flags": "^1.4.0",
     "@types/recharts": "^1.8.16",
     "array-move": "^3.0.1",
     "jquery": "^3.5.1",
@@ -35,6 +36,7 @@
     "react-scripts": "3.4.3",
     "react-sortable-hoc": "^1.11.0",
     "react-window": "^1.8.5",
+    "react-world-flags": "^1.4.0",
     "recharts": "^1.8.5",
     "redux": "^4.0.5",
     "typescript": "~3.7.2"
