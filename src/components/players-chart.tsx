@@ -44,7 +44,7 @@ export class PlayersChart extends Component<Props, State>{
 
     getYearRange(): number[]{
         if(this.props.playerPointsNormal1.length === 0){
-            return [2000, this.currentYear + 2027]
+            return [2000, this.currentYear + 7]
         }
         return [
             this.props.playerPointsNormal1[0].date.getUTCFullYear(),

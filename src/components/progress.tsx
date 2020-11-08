@@ -127,7 +127,7 @@ export class ProgressComponent extends Component<Props, State>{
                     <Grid item xs = {12}>
                         <div style={{position: "relative"}}>
                             {
-                                <div style={(this.state.playerUpdating || this.state.playerName1 === undefined) ? {filter:"blur(5px)"} : undefined }>
+                                <div style={(this.state.playerUpdating || this.state.playerName1 === undefined) ? {filter:"blur(5px)", pointerEvents:'none'} : undefined }>
                                     
                                     <PlayersChart 
                                         playerPointsNormal1={this.state.playerPointsNormal1} 
