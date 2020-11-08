@@ -78,7 +78,7 @@ export class RankerComponent extends Component<Props, {}>{
                                         </Button>
                                         </Grid>
                                     </Grid>
-                                    <Typography align='right' variant='body2'style={{marginTop:20, marginRight:10}} color="textSecondary">
+                                    <Typography align='right' variant='body2'style={{marginTop:20, marginRight:3}} color="textSecondary">
                                         <i>{isMobile ? "*Hold and drag to reorder" :
                                             "*Drag to reorder"}</i>
                                     </Typography>

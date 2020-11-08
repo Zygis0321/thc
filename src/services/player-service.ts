@@ -151,6 +151,16 @@ class PlayersService {
 
     }
 
+    fixPlayers(players: Player[], prefScores: number[]): Player[]{
+        for(let player of players){
+            if(player.club === '???'){
+                player.club = 'no club'
+            }
+            player.rank = prefScores[player.points+1]+1
+        }
+        return players
+    }
+
 }
 
 const playersService = new PlayersService();

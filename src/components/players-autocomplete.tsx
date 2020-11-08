@@ -1,6 +1,6 @@
-import { Box, Checkbox, InputAdornment, List, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
+import { Box, Checkbox, IconButton, InputAdornment, List, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import { Search } from '@material-ui/icons';
+import { Clear, Remove, Search } from '@material-ui/icons';
 import Skeleton from '@material-ui/lab/Skeleton';
 import React, { Component } from 'react';
 import { Player } from '../services/player-service';
@@ -34,11 +34,28 @@ export class PlayersAutoComplete extends Component<Props, State>{
                     variant="outlined" 
                     onChange={this.handleSearchChange} 
                     fullWidth
+                    value = {this.state.searchText}
                     InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <Search color='action'/>
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <Search/>
                             </InputAdornment>
+                        ),
+                        endAdornment: (
+                            this.state.searchText.length ?
+                            <InputAdornment position="end">
+                                <IconButton 
+                                    size='small'
+                                    onClick = {() => {
+                                        this.setState({
+                                            searchText: ''
+                                        })
+                                    }}
+                                >
+                                    <Clear/>
+                                </IconButton>
+                            </InputAdornment>
+                            : null
                         )
                     }}
                 />

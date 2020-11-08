@@ -23,9 +23,10 @@ class AppComponent extends Component<Props, {}> {
     $.ajax('https://serene-crag-74633.herokuapp.com/all')
       .then(res => {
           const players:Player[] =  playersService.parseContent(res)
+          const prefScores:number[] = playersService.getPlayerScores(players)
           this.props.updatePlayersState({
-            prefScores: playersService.getPlayerScores(players),
-            players
+            prefScores,
+            players: playersService.fixPlayers(players, prefScores)
           })
       })
       .catch(() => {

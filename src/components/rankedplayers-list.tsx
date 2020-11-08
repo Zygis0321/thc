@@ -1,5 +1,5 @@
 import { Box, Grid, IconButton, List, ListItem, ListItemText } from "@material-ui/core";
-import { Clear } from "@material-ui/icons";
+import { Clear, Remove } from "@material-ui/icons";
 import Skeleton from "@material-ui/lab/Skeleton";
 import CSS from 'csstype';
 import React, { Component } from "react";
@@ -9,7 +9,7 @@ import { PlayerRanked } from "../services/player-service";
 import styles from './styles/playerlist.module.css';
 
 const listItemStyle: CSS.Properties = {
-    boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.2)',
+    boxShadow: '0 1.5px 4px rgba(0, 0, 0, 0.2)',
     backgroundColor: 'rgb(255, 255, 255)',
     marginTop: '10px',
     marginBottom: '10px',
@@ -41,7 +41,7 @@ const SortableItem = SortableElement(({children}:any) => {
     const isTabletOrMobile = useMediaQuery({ maxWidth: tabletMaxWidth })
     return(
         <ListItem 
-        
+            
             style={isTabletOrMobile ? mobileListItemStyle : listItemStyle}
             onMouseEnter={ (): void => { if (document.body.style.cursor !== 'grabbing') document.body.style.cursor = 'grab' } }
             onMouseLeave={ (): void => { if (document.body.style.cursor === 'grab') document.body.style.cursor = '' } }
@@ -117,13 +117,13 @@ export class RankedPlayersList extends Component<Props, {}>{
                     </Grid>
                 </ResponsiveListItem>
                 {this.props.playersCompare.map((value, index) => (
-                <SortableItem key={index} index={index} >
+                <SortableItem  key={index} index={index} >
                     <Grid item xs = {1}>
                     <ListItemText><b>{value.pos}</b></ListItemText>
 
                     </Grid>
                     <Grid item xs={3} sm={4}>
-                        <ListItemText>{value.name}</ListItemText>
+                        <ListItemText style={{marginRight:5}}>{value.name}</ListItemText>
 
                     </Grid>
                     <Grid item xs>
@@ -176,7 +176,7 @@ export class RankedPlayersList extends Component<Props, {}>{
                                             <ListItemText  ><b>{value.score}</b></ListItemText>
                                         </Box>
                                         <IconButton size='small' onClick = {() => this.props.playerRemoved(value.id)} id="buttonRemove">
-                                            <Clear id="buttonRemove"/>
+                                            <Remove id="buttonRemove"/>
                                         </IconButton>
                                     </>
                                     

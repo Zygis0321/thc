@@ -22,9 +22,10 @@ interface State{
 
 
 export class PlayersChart extends Component<Props, State>{
-
+    
+    private currentYear = Math.max(new Date().getFullYear(), 2020)
     public readonly state:State = {
-        yearRange: [2000, 2027],
+        yearRange: [2000, this.currentYear + 1],
     }
 
     public readonly player2Color: string = "#8884d8"
@@ -34,8 +35,8 @@ export class PlayersChart extends Component<Props, State>{
         if(prevProps.playerPointsNormal1 !== this.props.playerPointsNormal1){
             this.setState((prevState) => ({
                 yearRange: [
-                    Math.min(this.getYearRange()[1], Math.max(this.getYearRange()[0], prevState.yearRange[0])),
-                    Math.max(this.getYearRange()[0], Math.min(this.getYearRange()[1], prevState.yearRange[1]))
+                    Math.min(  Math.min(this.getYearRange()[1], this.currentYear + 1), Math.max(this.getYearRange()[0], prevState.yearRange[0])),
+                    Math.max(this.getYearRange()[0], Math.min( Math.min(this.getYearRange()[1], this.currentYear + 1), prevState.yearRange[1]))
                 ]
             }));
         }
@@ -43,7 +44,7 @@ export class PlayersChart extends Component<Props, State>{
 
     getYearRange(): number[]{
         if(this.props.playerPointsNormal1.length === 0){
-            return [2000, 2027]
+            return [2000, this.currentYear + 2027]
         }
         return [
             this.props.playerPointsNormal1[0].date.getUTCFullYear(),
