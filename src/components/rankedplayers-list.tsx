@@ -1,5 +1,5 @@
 import { Box, Grid, IconButton, List, ListItem, ListItemText } from "@material-ui/core";
-import { Clear, Remove } from "@material-ui/icons";
+import { Remove } from "@material-ui/icons";
 import Skeleton from "@material-ui/lab/Skeleton";
 import CSS from 'csstype';
 import React, { Component } from "react";
@@ -161,22 +161,12 @@ export class RankedPlayersList extends Component<Props, {}>{
                          <Grid container direction='row' justify='flex-end' > 
                             <MediaQuery maxWidth={tabletMaxWidth}>
                                 {(matches) => 
-                                    matches ? 
                                     <>
-                                        <Box  display="flex" alignItems="center" justifyContent="flex-end" marginRight='2px' >
+                                        <Box  display="flex" alignItems="center" justifyContent="flex-end" marginRight={matches?'2px':2} >
                                             <ListItemText  ><b>{value.score}</b></ListItemText>
                                         </Box>
                                         <IconButton size='small' onClick = {() => this.props.playerRemoved(value.id)} id="buttonRemove">
-                                            <Clear fontSize='small' id="buttonRemove"/>
-                                        </IconButton>
-                                        </>
-                                    :
-                                    <>
-                                        <Box  display="flex" alignItems="center" justifyContent="flex-end" marginRight={2} >
-                                            <ListItemText  ><b>{value.score}</b></ListItemText>
-                                        </Box>
-                                        <IconButton size='small' onClick = {() => this.props.playerRemoved(value.id)} id="buttonRemove">
-                                            <Remove id="buttonRemove"/>
+                                            <Remove fontSize={matches ? 'small' : undefined} id="buttonRemove"/>
                                         </IconButton>
                                     </>
                                     
