@@ -139,7 +139,7 @@ export default function PlayerCard(props: Props){
                         </CardActions>
                     </div>
             {!isMobile && <Flag 
-                style={{width:'345px', flex:'0 0 345px', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',}}
+                style={{width:'340px', flex:'0 0 340px', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',}}
                 alt = {getCountry(props.player.nation).name}
                 code={getCountry(props.player.nation).alpha2code.toLowerCase()}
             />}
