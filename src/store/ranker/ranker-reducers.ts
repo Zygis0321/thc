@@ -4,7 +4,7 @@ import { RankerActionTypes, RankerState, UPDATE_RANKER_STATE } from "./ranker-ty
 const initialState: RankerState = {
     playersCompare: [],
     selectedLevel: levelList[0].name,
-    bottomNavVal: 0
+    bottomNavVal: 1
 }
 
 export function rankerReducer(
