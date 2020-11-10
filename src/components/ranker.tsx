@@ -87,6 +87,19 @@ export class RankerComponent extends Component<Props, {}>{
                                         reorder = {this.reorder}
                                         playerRemoved = {this.playerRemoved}
                                     />
+                                    {this.props.rankerState.playersCompare.length < 4 &&
+                                    <div style={{textAlign:'center', fontSize:'14px', fontFamily: 'Arial', color:'#1976d2'}}>
+                                        <span >
+                                            {`Add`}
+                                        </span>
+                                        <span style={{marginLeft:4, marginRight:4,color:'#dc004e', fontWeight:600}}>
+                                            {4-this.props.rankerState.playersCompare.length}
+                                        </span>
+                                        <span  >
+                                            {`more player${this.props.rankerState.playersCompare.length<3 ? 's':''} to make this tournament rated`}
+                                        </span>
+                                    </div>
+                                    }
                                 </Grid>
                             
                             }
@@ -110,7 +123,7 @@ export class RankerComponent extends Component<Props, {}>{
                         width:'100%',
                         position: 'fixed',
                         bottom: '0',
-                        right:'0',
+                        //right:'0',
                         left:'0',
                         boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',
                         zIndex: 99999
