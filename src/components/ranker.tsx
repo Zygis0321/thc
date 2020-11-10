@@ -5,6 +5,7 @@ import $ from "jquery";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import MediaQuery from 'react-responsive';
+import { RouteComponentProps, StaticContext } from 'react-router';
 import { AnyAction, Dispatch } from 'redux';
 import { Level, levelList } from '../data/scorecalc-data';
 import playersService, { Player, PlayerRanked } from '../services/player-service';
@@ -17,7 +18,8 @@ import { RankedPlayersList } from './rankedplayers-list';
 
 
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> 
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{}, StaticContext, {addPlayer?: Player}>
+
 
 export class RankerComponent extends Component<Props, {}>{ 
     
@@ -33,6 +35,12 @@ export class RankerComponent extends Component<Props, {}>{
             playersCompare: this.recalc(arrayMove(this.props.rankerState.playersCompare, oldIndex, newIndex), this.props.rankerState.selectedLevel)
         })
       };
+
+    componentDidMount():void {
+        if(this.props.location.state!==undefined && this.props.location.state!==null &&this.props.location.state.addPlayer !== undefined){
+            this.handlePlayerToggle(this.props.location.state.addPlayer, true)
+        }
+    }
 
     render(): React.ReactNode{
         return(
@@ -138,9 +146,14 @@ export class RankerComponent extends Component<Props, {}>{
         )
     }
 
-    private readonly handlePlayerToggle = (player: Player): void => {
+    public readonly handlePlayerToggle = (player: Player, forceAdd?: boolean): void => {
         if(this.props.rankerState.playersCompare.some(p => p.id==player.id)){
-            this.playerRemoved(player.id)
+            
+            
+            if(forceAdd!==true){
+                this.playerRemoved(player.id)
+            }
+            
         }
         else{
             this.playerAdded(player);

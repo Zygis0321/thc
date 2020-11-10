@@ -8,6 +8,8 @@ import { useHistory } from "react-router";
 import { getCountry } from "../services/country-service";
 import { Player } from "../services/player-service";
 import Flag from 'react-world-flags'
+import { useSelector } from "react-redux";
+import { RootState } from "../store/combineReducers";
 
 interface OwnProps{
     player: Player | null
@@ -75,6 +77,7 @@ function PlayerSkeleton(){
 
 export function PlayerHomeCard(props: {player?: Player}){
     let history = useHistory()
+    
     function PlayerClicked(playerId?: string){
         if(playerId==undefined)return
         history.push(`/players/${playerId}`)
@@ -94,6 +97,11 @@ export function PlayerHomeCard(props: {player?: Player}){
 
 export default function PlayerCard(props: Props){
     const isMobile = useMediaQuery({maxWidth: 959});
+    const history = useHistory()
+    const playersCompare = useSelector(
+        (state: RootState) => 
+        state.ranker.playersCompare
+    )
     return (
         props.player === null ?
         <Card style = {{ display:'flex', height: '230px', width:'100%', maxWidth:'650px', marginLeft:'auto', marginRight:'auto'}}>
@@ -114,6 +122,19 @@ export default function PlayerCard(props: Props){
                                 target = '_blank'
                             >
                                 Learn More
+                            </Button>
+                            <Button 
+                                size="small" 
+                                color="primary"
+                                disabled={playersCompare.some(player => props.player?.id===player.id)}
+                                onClick = {() => {
+                                    history.push({
+                                        pathname: '/ranker',
+                                        state: {addPlayer: props.player}
+                                    })
+                                }}
+                            >
+                                Add to Ranker
                             </Button>
                         </CardActions>
                     </div>
