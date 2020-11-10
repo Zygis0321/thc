@@ -4,6 +4,7 @@ import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete
 import $ from "jquery";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import MediaQuery from 'react-responsive';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { percentageExceptionList, percentageNormalList } from '../data/scorecalc-data';
 import { Player } from '../services/player-service';
@@ -125,6 +126,8 @@ export class ProgressComponent extends Component<Props, State>{
                         <PlayerCard player={this.state.selectedPlayer}/>
                     </Grid>
                     <Grid item xs = {12}>
+                        <MediaQuery maxWidth={599}>
+                        {(isMobile) =>
                         <div style={{position: "relative"}}>
                             {
                                 <div style={(this.state.playerUpdating || this.state.playerName1 === undefined) ? {filter:"blur(5px)", pointerEvents:'none'} : undefined }>
@@ -144,7 +147,7 @@ export class ProgressComponent extends Component<Props, State>{
                                 <div style={{
                                     position:"absolute", 
                                     width:"100%", 
-                                    height:"500px", 
+                                    height:isMobile?"350px":"500px", 
                                     top:0, 
                                     left:0, 
                                     display:'flex', 
@@ -162,6 +165,8 @@ export class ProgressComponent extends Component<Props, State>{
                                 </div>
                             }
                         </div>
+                        }
+                        </MediaQuery>
                     </Grid>
                 </Grid>
         )
