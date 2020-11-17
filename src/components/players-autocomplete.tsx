@@ -1,6 +1,6 @@
 import { Box, Checkbox, IconButton, InputAdornment, List, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import { Clear, Remove, Search } from '@material-ui/icons';
+import { Clear, Search } from '@material-ui/icons';
 import Skeleton from '@material-ui/lab/Skeleton';
 import React, { Component } from 'react';
 import { Player } from '../services/player-service';
@@ -71,7 +71,7 @@ export class PlayersAutoComplete extends Component<Props, State>{
                                             <Checkbox
                                                 edge="end"
                                                 onChange={() => this.props.handlePlayerToggle(player)}
-                                                checked={this.props.playersCompare.some(p => p.id==player.id)}
+                                                checked={this.props.playersCompare.some(p => p.id===player.id)}
                                             />
                                         </ListItemSecondaryAction>
                                     </ListItem>

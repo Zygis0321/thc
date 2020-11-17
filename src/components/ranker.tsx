@@ -1,4 +1,4 @@
-import { BottomNavigation, BottomNavigationAction, Box, Button, Divider, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import { BottomNavigation, BottomNavigationAction, Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import { ClearAll, GroupAdd, List as ListIcon } from '@material-ui/icons';
 import arrayMove from 'array-move';
 import $ from "jquery";
@@ -24,7 +24,7 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 export class RankerComponent extends Component<Props, {}>{ 
     
     private readonly recalc = (players: PlayerRanked[], levelName: string): PlayerRanked[] => {
-        let levelFound = levelList.find(level => level.name==levelName)
+        let levelFound = levelList.find(level => level.name===levelName)
         let level:Level = levelFound ? levelFound : levelList[0]
         return playersService.rankPlayers(playersService.recalc(players, level), this.props.prefScores);
     }
@@ -147,7 +147,7 @@ export class RankerComponent extends Component<Props, {}>{
     }
 
     public readonly handlePlayerToggle = (player: Player, forceAdd?: boolean): void => {
-        if(this.props.rankerState.playersCompare.some(p => p.id==player.id)){
+        if(this.props.rankerState.playersCompare.some(p => p.id===player.id)){
             
             
             if(forceAdd!==true){
@@ -172,7 +172,7 @@ export class RankerComponent extends Component<Props, {}>{
                 newPoints:-1
             }), this.props.rankerState.selectedLevel)
         })
-        $.ajax('https://serene-crag-74633.herokuapp.com/single/'+player.id)
+        $.ajax('https://europe-west3-thranker.cloudfunctions.net/single?playerId='+player.id)
         .then(res => {
             
             let score = Number(res);
@@ -232,3 +232,4 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>({
 
 const Ranker = connect(mapStateToProps, mapDispatchToProps)(RankerComponent)
 export { Ranker };
+

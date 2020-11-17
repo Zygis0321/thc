@@ -1,3 +1,4 @@
+import { PlayerSeries } from "../components/charts/players-chart";
 import {  exceptionInterval, PointsPercentage } from "../data/scorecalc-data";
 import { Player } from "./player-service";
 
@@ -25,13 +26,16 @@ interface PointsByDatePrecalc extends PointsByDate {
 
 export interface ChartData {
     date: string,
-    points01?: number,
-    points02?: number,
-    points03?: number,
-    points11?: number,
-    points12?: number,
-    points13?: number,
+    points: number,
 }
+
+export interface PlayerPoints {
+    pointsNormal: PointsByDate[]
+    pointsException: PointsByDate[]
+    playerName: string
+}
+
+
 
 class TournamentsService {
 
@@ -82,53 +86,78 @@ class TournamentsService {
         return ret
     }
 
-    convertDateToString = (date: Date): string  => {
+    convertDateToYearString = (date: Date): string  => {
         return date.toUTCString().slice(5, 16);
     }
+    convertDateToCareerString = (date: Date, interval: number): string  => {
+        let year = date.getUTCFullYear()-1970
+        let month = date.getUTCMonth()
+        let day = date.getUTCDate()
+        return `${year} yr${year===1?'':'s'}. ${month} mo${month===1?'':'s'}.${interval < 4 ? ` ${day} d.`:''}`
+    }
 
-    getChartData = (date: number, score: number, type: number): ChartData => {
-        if(type==0){
-            return{
-                date: this.convertDateToString(new Date(date)),
-                points01: score
-            }
+    getYearChartData = (date: number, score: number): ChartData => {
+        return{
+            date: this.convertDateToYearString(new Date(date)),
+            points: score
         }
-        else if(type==1){
-            return{
-                date: this.convertDateToString(new Date(date)),
-                points02: score
-            }
-        }
-        else {
-            return{
-                date: this.convertDateToString(new Date(date)),
-                points03: score
-            }
+
+    }
+    getCareerChartData = (date: number, score: number, interval:number): ChartData => {
+        return{
+            date: this.convertDateToCareerString(new Date(date), interval),
+            points: score
         }
 
     }
 
-    scalePointsByDate = (points: PointsByDate[], step: number, startRange: Date, endRange: Date, type: number): ChartData[] => {
+    scalePointsByDate = (points: PointsByDate[], step: number, startRange: Date, endRange: Date, includeEnd?: boolean): {date:number, score:number}[] => {
         let startTime = startRange.getTime();
         let endTime = endRange.getTime();
 
         let ind = 0
         let score = 0
-        let ret:ChartData[] = []
+        let ret:{date:number, score:number}[] = []
         for(let i=startTime; i<endTime; i+=step){
             while(ind < points.length && points[ind].date.getTime() <= i){
                 score = points[ind].points
                 ind++
             }
-            ret.push(this.getChartData(i, score, type))
+            ret.push({date:i, score})
         }
-        while(ind < points.length && points[ind].date.getTime() <= endTime){
-            score = points[ind].points
-            ind++
+        if(includeEnd===true){
+            while(ind < points.length && points[ind].date.getTime() <= endTime){
+                score = points[ind].points
+                ind++
+            }
+            ret.push({date:endTime, score})
         }
-        ret.push(this.getChartData(endTime, score, type))
+
         return ret
     }
+
+    scalePointsByDateYear = (
+        points: PointsByDate[], 
+        step: number, 
+        startRange: Date, 
+        endRange: Date
+    ): ChartData[] => {
+        let ret = this.scalePointsByDate(points, step, startRange, endRange, true);
+        return ret.map(value => this.getYearChartData(value.date, value.score))
+    }
+
+    scalePointsByDateCareer = (
+        points: PointsByDate[], 
+        step: number, 
+        startRange: Date, 
+        endRange: Date, 
+        offset:number, 
+        interval: number
+    ): ChartData[] => {
+        let ret = this.scalePointsByDate(points, step, startRange, endRange);
+        return ret.map(value => this.getCareerChartData(value.date-offset, value.score, interval))
+    }
+
 
 
     getMaxDate = (a: Date, b:Date): Date=>{
@@ -140,107 +169,82 @@ class TournamentsService {
         return b
     }
 
-    getChartDataArray = (
+    getCareerChartDataArray = (
+        careerRange: number[],
+        density: number,
+        
+        playerPoints:PlayerPoints[]
+    ): PlayerSeries[] => {
+
+        let startDate:Date = new Date(Date.UTC(careerRange[0], 0))
+        let endDate:Date = new Date(Date.UTC(careerRange[1], 0))
+        let dateOffset = startDate.getTime() - new Date(Date.UTC(0,0)).getTime()
+
+        let ret:PlayerSeries[] = []
+        let dateInterval = endDate.getTime() - startDate.getTime()
+        let step: number = dateInterval / density
+
+        let currentDate = new Date()
+
+        for(let player of playerPoints){
+             
+            ret.push({
+                playerName: player.playerName,
+                data: [this.scalePointsByDateCareer(
+                    player.pointsNormal,
+                    step,
+                    new Date(player.pointsNormal[0].date.getTime()+dateOffset),
+                    new Date(Math.min(currentDate.getTime(), player.pointsNormal[0].date.getTime()+dateInterval+dateOffset)),
+                    player.pointsNormal[0].date.getTime(),
+                    careerRange[1]-careerRange[0]
+                )]
+            })
+        }
+        return ret
+    }
+
+    getYearChartDataArray = (
         yearRange: number[], 
         density: number, 
-        playerPoints:PointsByDate[], 
-        playerPointsException: PointsByDate[],
-        playerPoints1:PointsByDate[]
-    ): ChartData[] => {
 
+        playerPoints:PlayerPoints,
+        mainPlayerStartDate: Date,
+        mainPlayerEndDate: Date
+    ): ChartData[][] => {
 
+        //Year might start earlier than first tournament
         let startDate: Date = this.getMaxDate(
             new Date(Date.UTC(yearRange[0], 0)), 
-            playerPoints1[0].date
+            mainPlayerStartDate
         )
         let endDate: Date = this.getMinDate(
             new Date(Date.UTC(yearRange[1], 0)), 
-            playerPoints1[playerPoints1.length - 1].date
+            mainPlayerEndDate
         )
         let step: number = (endDate.getTime() - startDate.getTime()) / density
 
         let res1: ChartData[] = startDate < exceptionInterval[0] ? 
-        this.scalePointsByDate(
-            playerPoints,
+        this.scalePointsByDateYear(
+            playerPoints.pointsNormal,
             step, 
             startDate, 
-            this.getMinDate( exceptionInterval[0], endDate),
-            0
+            this.getMinDate( exceptionInterval[0], endDate)
         ) : []
         let res2: ChartData[] = endDate > exceptionInterval[0] && startDate < exceptionInterval[1]  ? 
-        this.scalePointsByDate(
-            playerPointsException,
+        this.scalePointsByDateYear(
+            playerPoints.pointsException,
             step, 
             this.getMaxDate(exceptionInterval[0], startDate), 
-            this.getMinDate(exceptionInterval[1], endDate),
-            1
+            this.getMinDate(exceptionInterval[1], endDate)
         ) : []
         let res3: ChartData[] = endDate > exceptionInterval[1] ? 
-        this.scalePointsByDate(
-            playerPoints,
+        this.scalePointsByDateYear(
+            playerPoints.pointsNormal,
             step, 
             this.getMaxDate(startDate, exceptionInterval[1]),
-            endDate,
-            2
+            endDate
         ) : []
-
-        if(res1.length && res2.length && res1[res1.length - 1].date === res2[0].date){
-            let newEl: ChartData = {
-                date: res2[0].date,
-                points01: res1[res1.length - 1].points01,
-                points02: res2[0].points02
-            }
-            
-            res1.pop()
-            res2[0] = newEl
-        }
-        if(res2.length && res3.length && res2[res2.length - 1].date === res3[0].date){
-            let newEl: ChartData = {
-                date: res3[0].date,
-                points02: res2[res2.length - 1].points02,
-                points03: res3[0].points03
-            }
-            
-            res2.pop()
-            res3[0] = newEl
-        }
-        return res1.concat(res2.concat(res3));
-    }
-    getChartDataArrayCompare = (
-        yearRange: number[], 
-        density: number, 
-        playerPoints1:PointsByDate[], 
-        playerPointsException1: PointsByDate[],
-        playerPoints2:PointsByDate[], 
-        playerPointsException2: PointsByDate[]
-    ): ChartData[] => {
-        let res1: ChartData[] = this.getChartDataArray(
-            yearRange,
-            density, 
-            playerPoints1, 
-            playerPointsException1,
-            playerPoints1
-        )
-        let res2: ChartData[] = this.getChartDataArray(
-            yearRange,
-            density, 
-            playerPoints2, 
-            playerPointsException2,
-            playerPoints1
-        )
-        let ind = 0
-        for(let i=0; i<res1.length; i++){
-            if(ind < res2.length && res1[i].date === res2[ind].date){
-                res1[i].points11 = res2[ind].points01 
-                res1[i].points12 = res2[ind].points02 
-                res1[i].points13 = res2[ind].points03
-                
-                ind++            
-            }
-
-        }
-        return res1
-
+        return [res1, res2, res3];
     }
 }
 

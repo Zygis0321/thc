@@ -1,26 +1,24 @@
+import $ from "jquery";
 import React, { Component } from 'react';
-import { BrowserRouter as Router, HashRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { Route } from 'react-router';
-import logo from './logo.svg';
+import { HashRouter } from 'react-router-dom';
+import { AnyAction, Dispatch } from 'redux';
 import './App.css';
+import { Home } from './components/home';
+import { NavBar } from './components/navbar';
+import { Progress } from './components/progress';
 import { Ranker } from './components/ranker';
 import playersService, { Player } from './services/player-service';
-import { AnyAction, Dispatch } from 'redux';
-import { updatePlayers, updatePlayersState } from './store/players/player-actions';
-import { connect } from 'react-redux';
-import $ from "jquery";
-import { Progress } from './components/progress';
-import { NavBar } from './components/navbar';
-import tournamentsService from './services/tournament-service';
+import { updatePlayersState } from './store/players/player-actions';
 import { PlayersState } from './store/players/player-types';
-import { Home } from './components/home';
 
 type Props = ReturnType<typeof mapDispatchToProps> 
 
 class AppComponent extends Component<Props, {}> {
   
   componentDidMount(): void{
-    $.ajax('https://serene-crag-74633.herokuapp.com/all')
+    $.ajax('https://europe-west3-thranker.cloudfunctions.net/all')
       .then(res => {
           const players:Player[] =  playersService.parseContent(res)
           const prefScores:number[] = playersService.getPlayerScores(players)

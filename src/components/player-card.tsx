@@ -79,7 +79,7 @@ export function PlayerHomeCard(props: {player?: Player}){
     let history = useHistory()
     
     function PlayerClicked(playerId?: string){
-        if(playerId==undefined)return
+        if(playerId===undefined)return
         history.push(`/players/${playerId}`)
     }
     return(

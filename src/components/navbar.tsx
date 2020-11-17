@@ -3,7 +3,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import CSS from 'csstype';
 import React, { useState } from "react";
 import MediaQuery from "react-responsive";
-import { Link, NavLink, RouteComponentProps, useHistory, withRouter } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 
 const navBarItemStyle:CSS.Properties = {
     margin:'10px',
