@@ -29,7 +29,6 @@ type Props = OwnProps
 
 export class PlayersChart extends Component<Props, {}>{
     
-    //public readonly player2Color: string = "#8884d8"
     public readonly mainPlayerColor: string = "#0004d8"
 
     
@@ -45,15 +44,6 @@ export class PlayersChart extends Component<Props, {}>{
         )
     }
 
-    check():boolean{
-        if(this.props.series.length && this.props.series[0].data.length){
-            console.log("true");
-            return true
-        }
-        console.log("false")
-        return false
-
-    }
 
     render(): React.ReactNode{
 

@@ -12,6 +12,7 @@ import tournamentsService, { PlayerPoints } from '../services/tournament-service
 import { RootState } from '../store/combineReducers';
 import { PlayersCareerChart } from './charts/career-chart-wrapper';
 import { PlayersYearChart } from './charts/year-chart-wrapper';
+import { ErrorMessage } from './error-message';
 import PlayerCard from './player-card';
 
 interface Params{
@@ -34,6 +35,8 @@ interface State{
     selectedComparePlayers: Player[]
 
     tabValue: number
+
+    showError: boolean
 }
 
 export class ProgressComponent extends Component<Props, State>{
@@ -44,7 +47,9 @@ export class ProgressComponent extends Component<Props, State>{
         playerUpdating: 0,
         selectedPlayer: null,
         selectedComparePlayers: [],
-        tabValue: 0
+        tabValue: 0,
+
+        showError: false
     }
 
     componentDidMount(){
@@ -80,7 +85,8 @@ export class ProgressComponent extends Component<Props, State>{
 
     render(): React.ReactNode{
         return(
-            (this.props.match.params.id !== undefined && this.props.players.length === 0) 
+            <>
+            {(this.props.match.params.id !== undefined && this.props.players.length === 0) 
             ? 
             <div style={{
                 height:'calc(100vh - 100px)',
@@ -189,7 +195,9 @@ export class ProgressComponent extends Component<Props, State>{
                         }
                         </MediaQuery>
                     </Grid>
-                </Grid>
+                </Grid>}
+                <ErrorMessage show={this.state.showError}/>
+                </>
         )
 
     }
@@ -273,7 +281,7 @@ export class ProgressComponent extends Component<Props, State>{
                     })
                 })
                 .catch(() => {
-                    console.log("error")
+                    this.setState({showError: true})
                     resolve(undefined)
                 })
                 .always(() => {

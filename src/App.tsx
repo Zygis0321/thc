@@ -5,6 +5,7 @@ import { Route } from 'react-router';
 import { HashRouter } from 'react-router-dom';
 import { AnyAction, Dispatch } from 'redux';
 import './App.css';
+import { ErrorMessage } from "./components/error-message";
 import { Home } from './components/home';
 import { NavBar } from './components/navbar';
 import { Progress } from './components/progress';
@@ -15,8 +16,14 @@ import { PlayersState } from './store/players/player-types';
 
 type Props = ReturnType<typeof mapDispatchToProps> 
 
-class AppComponent extends Component<Props, {}> {
-  
+interface State{
+  showError: boolean
+}
+
+class AppComponent extends Component<Props, State> {
+  public readonly state: State = {
+    showError: false
+  }
   componentDidMount(): void{
     $.ajax('https://europe-west3-thranker.cloudfunctions.net/all')
       .then(res => {
@@ -28,7 +35,7 @@ class AppComponent extends Component<Props, {}> {
           })
       })
       .catch(() => {
-          console.log("error")
+          this.setState({showError: true})
       })
   }
   
@@ -42,6 +49,7 @@ class AppComponent extends Component<Props, {}> {
           <Route exact path='/ranker' component={Ranker} />
           <Route exact path= '/players/:id?' component={Progress} />
         </NavBar>
+        <ErrorMessage show={this.state.showError}/>
       </HashRouter>
     );
   }

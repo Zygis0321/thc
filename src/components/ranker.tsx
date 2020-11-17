@@ -12,6 +12,7 @@ import playersService, { Player, PlayerRanked } from '../services/player-service
 import { RootState } from '../store/combineReducers';
 import { updateRankerState } from '../store/ranker/ranker-actions';
 import { RankerState } from '../store/ranker/ranker-types';
+import { ErrorMessage } from './error-message';
 import { PlayersAutoComplete } from './players-autocomplete';
 import { RankedPlayersList } from './rankedplayers-list';
 
@@ -20,9 +21,15 @@ import { RankedPlayersList } from './rankedplayers-list';
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & RouteComponentProps<{}, StaticContext, {addPlayer?: Player}>
 
+interface State{
+    showError: boolean
+}
 
 export class RankerComponent extends Component<Props, {}>{ 
-    
+    public readonly state: State = {
+        showError: false
+    }
+
     private readonly recalc = (players: PlayerRanked[], levelName: string): PlayerRanked[] => {
         let levelFound = levelList.find(level => level.name===levelName)
         let level:Level = levelFound ? levelFound : levelList[0]
@@ -142,6 +149,7 @@ export class RankerComponent extends Component<Props, {}>{
                     <BottomNavigationAction label="Standings" style={{maxWidth:"1000px"}} icon={<ListIcon/>}/>
                 </BottomNavigation>
             </MediaQuery>
+            <ErrorMessage show={this.state.showError}/>
             </>
         )
     }
@@ -194,7 +202,7 @@ export class RankerComponent extends Component<Props, {}>{
         
         })
         .catch(() => {
-            console.log("error")
+            this.setState({showError: true})
         })
 
     }

@@ -65,7 +65,6 @@ export function Home(){
                     variant='outlined' 
                     color='primary' 
                     onClick={() => {
-                        console.log(isMobile)
                         setPlayerCount(playerCount+6)
                     }}
                     style={{width:'200px'}}
