@@ -18,7 +18,7 @@ interface State{
 
 export class PlayersCareerChart extends Component<Props, State>{
     
-    private currentDate = new Date()
+    private currentDate = tournamentsService.getMaxDate(new Date(Date.UTC(2020,0)), new Date())
     public readonly state:State = {
     }
     componentDidMount(){
@@ -28,12 +28,22 @@ export class PlayersCareerChart extends Component<Props, State>{
     componentDidUpdate(prevProps: Props){
         if(this.props.playerPointsArray.length &&
             (!prevProps.playerPointsArray.length || prevProps.playerPointsArray !== this.props.playerPointsArray)){
-            this.setState((prevState) => ({
-                yearRange: [
-                    Math.min(  this.getYearRange().end, Math.max(this.getYearRange().start, prevState.yearRange ? prevState.yearRange[0] : 0)),
-                    Math.max(this.getYearRange().start, Math.min( this.getYearRange().end, prevState.yearRange ? prevState.yearRange[1] : 100000))
-                ]
-            }));
+            
+            if(!prevProps.playerPointsArray.length || prevProps.playerPointsArray[0].pointsNormal !== this.props.playerPointsArray[0].pointsNormal){
+                this.setState({
+                    yearRange: [this.getYearRange().start, this.getYearRange().end]
+                })
+            }
+            else{
+                this.setState((prevState) => ({
+                    yearRange: [
+                        Math.min(  this.getYearRange().end, Math.max(this.getYearRange().start, prevState.yearRange ? prevState.yearRange[0] : 0)),
+                        Math.max(this.getYearRange().start, Math.min( this.getYearRange().end, prevState.yearRange ? prevState.yearRange[1] : 100000))
+                    ]
+                }));                
+            }
+
+
         }
     }
 
