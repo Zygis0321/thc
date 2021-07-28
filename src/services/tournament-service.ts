@@ -1,5 +1,6 @@
 import { PlayerSeries } from "../components/charts/players-chart";
 import {  exceptionInterval, PointsPercentage } from "../data/scorecalc-data";
+import { currentDate, toUTCDate } from "./date-service";
 import { Player } from "./player-service";
 
 export interface Tournament{
@@ -87,6 +88,12 @@ class TournamentsService {
     }
 
     convertDateToYearString = (date: Date): string  => {
+        if (
+          date.getDate() === currentDate.getUTCDate() &&
+          date.getMonth() === currentDate.getMonth() &&
+          date.getFullYear() === currentDate.getFullYear()
+        )
+          return "Now";
         return date.toUTCString().slice(5, 16);
     }
     convertDateToCareerString = (date: Date, interval: number): string  => {
@@ -184,8 +191,6 @@ class TournamentsService {
         let dateInterval = endDate.getTime() - startDate.getTime()
         let step: number = dateInterval / density
 
-        let currentDate = new Date()
-
         for(let player of playerPoints){
              
             ret.push({
@@ -203,6 +208,15 @@ class TournamentsService {
         return ret
     }
 
+    yearToDate = (year: number) => {
+        const currentYear = Math.max(currentDate.getFullYear(), 2021);
+        if(year === currentYear + 1)
+            return currentDate;
+        if(year > currentYear)
+            return toUTCDate(year - 1);
+        return toUTCDate(year);
+    }
+
     getYearChartDataArray = (
         yearRange: number[], 
         density: number, 
@@ -211,14 +225,16 @@ class TournamentsService {
         mainPlayerStartDate: Date,
         mainPlayerEndDate: Date
     ): ChartData[][] => {
+        
+        
 
         //Year might start earlier than first tournament
         let startDate: Date = this.getMaxDate(
-            new Date(Date.UTC(yearRange[0], 0)), 
+            this.yearToDate(yearRange[0]), 
             mainPlayerStartDate
         )
         let endDate: Date = this.getMinDate(
-            new Date(Date.UTC(yearRange[1], 0)), 
+            this.yearToDate(yearRange[1]), 
             mainPlayerEndDate
         )
         let step: number = (endDate.getTime() - startDate.getTime()) / density

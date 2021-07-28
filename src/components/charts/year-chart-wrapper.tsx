@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import MediaQuery from "react-responsive";
 import { exceptionInterval } from "../../data/scorecalc-data";
+import { currentDate } from "../../services/date-service";
 import tournamentsService, { PlayerPoints } from "../../services/tournament-service";
 import { PlayersChart } from "./players-chart";
 
@@ -22,7 +23,7 @@ export class PlayersYearChart extends Component<Props, State>{
     public readonly state:State = {
     }
 
-    private currentYear = Math.max(new Date().getFullYear(), 2020)
+    private currentYear = Math.max(currentDate.getFullYear(), 2020)
     componentDidMount(){
         this.componentDidUpdate({playerPointsArray:[]})
     }
@@ -58,6 +59,7 @@ export class PlayersYearChart extends Component<Props, State>{
             <MediaQuery maxWidth='599px'>{
                 (isMobile) =>
                 <PlayersChart
+                    includeNow
                     sliderMin = {this.getYearRange().start}
                     sliderMax = {this.getYearRange().end}
                     sliderRange = {this.state.yearRange === undefined ? [2000, this.currentYear] : this.state.yearRange}

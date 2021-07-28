@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import MediaQuery from "react-responsive";
+import { currentDate } from "../../services/date-service";
 import tournamentsService, { PlayerPoints } from "../../services/tournament-service";
 import { PlayersChart } from "./players-chart";
 
@@ -18,7 +19,6 @@ interface State{
 
 export class PlayersCareerChart extends Component<Props, State>{
     
-    private currentDate = tournamentsService.getMaxDate(new Date(Date.UTC(2020,0)), new Date())
     public readonly state:State = {
     }
     componentDidMount(){
@@ -54,7 +54,7 @@ export class PlayersCareerChart extends Component<Props, State>{
         let maxYear = 0;
         for(let playerPoints of this.props.playerPointsArray){
             maxYear = Math.max(maxYear, 
-                new Date(tournamentsService.getMinDate(this.currentDate, 
+                new Date(tournamentsService.getMinDate(currentDate, 
                     playerPoints.pointsNormal[playerPoints.pointsNormal.length-1].date).getTime()
                     - playerPoints.pointsNormal[0].date.getTime()).getFullYear() - 1970 + 1
             )

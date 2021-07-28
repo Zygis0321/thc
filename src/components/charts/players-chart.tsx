@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import MediaQuery from "react-responsive";
 import { CartesianGrid, Legend, LegendPayload, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { getColorByName } from "../../services/color-service";
+import { currentDate } from "../../services/date-service";
 import { ChartData } from "../../services/tournament-service";
 
 
@@ -20,7 +21,7 @@ interface OwnProps{
     
     references:string[]
     series: PlayerSeries[]
-
+    includeNow?: boolean
 
 }
 
@@ -31,7 +32,7 @@ export class PlayersChart extends Component<Props, {}>{
     
     public readonly mainPlayerColor: string = "#0004d8"
 
-    
+    private currentYear = Math.max(currentDate.getFullYear(), 2021)
     
     getPayload(): LegendPayload[]{
         return this.props.series.map((playerSeries, index) =>
@@ -44,6 +45,15 @@ export class PlayersChart extends Component<Props, {}>{
         )
     }
 
+    getLabel = (value: number): string | number => {
+        if(!this.props.includeNow)
+            return value;
+        if(value === this.currentYear+1)
+            return 'Now';
+        if(value > this.currentYear)
+            return value - 1;
+        return value;
+    }
 
     render(): React.ReactNode{
 
@@ -62,7 +72,8 @@ export class PlayersChart extends Component<Props, {}>{
                     marks
                     step = {1}
                     min = {this.props.sliderMin}
-                    max = {this.props.sliderMax}
+                    max = {this.props.includeNow ? this.props.sliderMax + 1 : this.props.sliderMax}
+                    valueLabelFormat = {this.getLabel}
                 />
                 </div>
                 <MediaQuery maxWidth='599px'>{
