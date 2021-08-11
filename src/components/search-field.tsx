@@ -9,13 +9,20 @@ type Props = {
 }
 
 export const SearchField: React.FC<Props> = (props) => {
+
     return(
         <TextField 
             label={props.label}
             variant="outlined" 
             onChange={(e) => props.onChange(e.target.value)} 
             fullWidth
+            id="searchField"
             value = {props.searchText}
+            onKeyPress={(ev) => {
+                if (ev.key === 'Enter' ) {
+                    document.getElementById('searchField')?.blur();
+                }
+            }}
             InputProps={{
                 startAdornment: (
                     <InputAdornment position="start">
