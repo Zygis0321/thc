@@ -1,4 +1,4 @@
-import { CircularProgress, Tab, Tabs, TextField, Typography } from '@material-ui/core';
+import { AppBar, CircularProgress, Divider, Paper, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid/Grid';
 import Autocomplete, { AutocompleteChangeDetails, AutocompleteChangeReason, createFilterOptions } from '@material-ui/lab/Autocomplete';
 import $ from "jquery";
@@ -7,13 +7,14 @@ import { connect } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import { RouteComponentProps } from 'react-router';
 import { percentageExceptionList, percentageNormalList } from '../data/scorecalc-data';
-import { Player } from '../services/player-service';
+import { Player, PlayerMain } from '../services/player-service';
 import tournamentsService, { PlayerPoints } from '../services/tournament-service';
 import { RootState } from '../store/combineReducers';
 import { PlayersCareerChart } from './charts/career-chart-wrapper';
 import { PlayersYearChart } from './charts/year-chart-wrapper';
 import { ErrorMessage } from './error-message';
 import PlayerCard from './player-card';
+import { PlayerCompareTable } from './player-compare-table';
 
 interface Params{
     id: string
@@ -97,7 +98,7 @@ export class ProgressComponent extends Component<Props, State>{
                 <CircularProgress style = {{alignSelf:'center'}}/>
             </div>
             :
-                <Grid container spacing={3}>
+                <Grid container spacing={2}>
                     <Grid item xs={12} sm={5} md={4}>
                         <Grid container spacing={3}>
 
@@ -138,23 +139,28 @@ export class ProgressComponent extends Component<Props, State>{
                     <Grid item xs sm md>
                         <PlayerCard player={this.state.selectedPlayer}/>
                     </Grid>
+                    <Grid xs={12} style={{marginTop:'18px'}}>
+                        <div style={{ marginLeft:'8px', marginRight:'8px',}}>
+                            <PlayerCompareTable players={this.state.selectedPlayer ? [{...this.state.selectedPlayer, isMain: true}, ...this.state.selectedComparePlayers]:this.state.selectedComparePlayers}/>
+                        </div>
+                    </Grid>
+                    <Paper className="Paper" style={{width:'100%', marginTop:'24px', marginBottom:'24px', marginLeft:'8px', marginRight:'8px', overflow:'hidden', }}>
                     <Grid item xs = {12}>
-                    {/* <Divider/> */}
-                        {/* <AppBar position='static' color='transparent' style={{margin:12}}> */}
+                    
+                        <AppBar position="static" color="transparent" style={{marginBottom:'18px', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)'}}>
                         <Tabs
                             value = {this.state.tabValue}
                             onChange = {(event: any, newValue:number) => {this.setState({tabValue:newValue})}}
                             centered
-                            style = {{marginBottom:"24px"}}
                             indicatorColor='primary'
                         >
                             <Tab label="Career Chart"/>
                             <Tab label="Date Chart"/>
                         </Tabs>
-                        {/* </AppBar> */}
+                        </AppBar>
                         <MediaQuery maxWidth={599}>
                         {(isMobile) =>
-                        <div style={{position: "relative"}}>
+                        <div style={{position: "relative", padding:isMobile?'6px': '10px'}}>
                             {
                                 <div style={(this.state.playerUpdating || this.state.mainPlayerPoints === undefined) ? {filter:"blur(5px)", pointerEvents:'none'} : undefined }>
                                     
@@ -195,6 +201,8 @@ export class ProgressComponent extends Component<Props, State>{
                         }
                         </MediaQuery>
                     </Grid>
+                    </Paper>
+
                 </Grid>}
                 <ErrorMessage show={this.state.showError}/>
                 </>
@@ -266,7 +274,7 @@ export class ProgressComponent extends Component<Props, State>{
 
 
     private readonly getPlayerPoints = (newValue: Player|null): Promise<PlayerPoints | undefined> =>{
-        var promise = new Promise<PlayerPoints>((resolve, reject) => {
+        var promise = new Promise<PlayerPoints | undefined>((resolve, reject) => {
             if(newValue === null){
                 resolve(undefined)
             }

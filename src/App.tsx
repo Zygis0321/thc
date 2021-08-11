@@ -1,3 +1,4 @@
+import { Container } from "@material-ui/core";
 import $ from "jquery";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -8,6 +9,7 @@ import './App.css';
 import { ErrorMessage } from "./components/error-message";
 import { Home } from './components/home';
 import { NavBar } from './components/navbar';
+import { PlayerTable } from "./components/player-table";
 import { Progress } from './components/progress';
 import { Ranker } from './components/ranker';
 import playersService, { Player } from './services/player-service';
@@ -45,9 +47,14 @@ class AppComponent extends Component<Props, State> {
     return (
       <HashRouter>
         <NavBar>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/ranker' component={Ranker} />
-          <Route exact path= '/players/:id?' component={Progress} />
+          <Container style={{padding: 0}}>
+            <Route exact path='/' component={Home} />
+            <Route exact path='/ranker' component={Ranker} />
+            <Route exact path= '/players/:id?' component={Progress} />
+          </Container>
+          <Container style={{padding: 0, maxWidth: 1600}}>
+            <Route path='/table/:page/:rowsPerPage' component={PlayerTable} />
+          </Container>
         </NavBar>
         <ErrorMessage show={this.state.showError}/>
       </HashRouter>

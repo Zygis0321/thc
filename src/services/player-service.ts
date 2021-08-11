@@ -19,9 +19,20 @@ export interface PlayerRanked extends Player{
     newPoints: number
 }
 
-class PlayersService {
+export interface PlayerMain extends Player{
+    isMain?: boolean,
+}
 
-    //private prefScores:number[] = []
+export type PlayerValue = string | number;
+
+export function getUniqueValues(players: Player[], key: keyof Player): PlayerValue[]{
+    return [...Array.from(new Set(players.map((player) => player[key])))].sort((a, b) => {
+        if(a < b) return -1;
+        return 1
+    })
+}
+
+class PlayersService {
 
     rankPlayers = (players: PlayerRanked[], prefScores:number[]): PlayerRanked[] => {
         for(let i=0; i<players.length; i++){

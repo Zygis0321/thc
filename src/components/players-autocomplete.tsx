@@ -4,6 +4,7 @@ import { Clear, Search } from '@material-ui/icons';
 import Skeleton from '@material-ui/lab/Skeleton';
 import React, { Component } from 'react';
 import { Player } from '../services/player-service';
+import { SearchField } from './search-field';
 //import matchSorter from 'match-sorter'
 
 interface OwnProps{
@@ -28,36 +29,10 @@ export class PlayersAutoComplete extends Component<Props, State>{
 
             <>
                 
-
-                <TextField 
-                    label="Players" 
-                    variant="outlined" 
-                    onChange={this.handleSearchChange} 
-                    fullWidth
-                    value = {this.state.searchText}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <Search/>
-                            </InputAdornment>
-                        ),
-                        endAdornment: (
-                            this.state.searchText.length ?
-                            <InputAdornment position="end">
-                                <IconButton 
-                                    size='small'
-                                    onClick = {() => {
-                                        this.setState({
-                                            searchText: ''
-                                        })
-                                    }}
-                                >
-                                    <Clear/>
-                                </IconButton>
-                            </InputAdornment>
-                            : null
-                        )
-                    }}
+                <SearchField
+                    label="Players"
+                    searchText={this.state.searchText}
+                    onChange={this.handleSearchChange}
                 />
                 <List dense>
                     {(!this.props.players.length ? Array.from(new Array(10)) : 
@@ -87,7 +62,7 @@ export class PlayersAutoComplete extends Component<Props, State>{
             </>
         )
     }
-    private readonly handleSearchChange = (e: any): void => {
-        this.setState({searchText: e.target.value});
+    private readonly handleSearchChange = (text: string): void => {
+        this.setState({searchText: text});
     }
 }

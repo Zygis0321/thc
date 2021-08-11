@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Container, Divider, Drawer, IconButton, List, ListItem, ListItemText, Typography } from "@material-ui/core";
+import { AppBar, Box, Button, Container, Divider, Drawer, IconButton, List, ListItem, ListItemText, Slide, Toolbar, Typography, useScrollTrigger } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import CSS from 'csstype';
 import React, { useState } from "react";
@@ -18,20 +18,29 @@ const buttonSelectedStyle:CSS.Properties = {
 interface navItem{
     name: string
     url: string
+    isActive?: (match: any, location: any) => boolean
 }
 
 const navList: navItem[] = [
     {
         name: 'Home',
-        url: '/'
+        url: '/',
     },
     {
         name: 'Players',
-        url: '/players'
+        url: '/players',
+    },
+    {
+        name: 'Table',
+        url: '/table/0/20',
+        isActive: (match: any, location: any) => {
+            const path:string = location.pathname;
+            return path.split('/')[1] === 'table';
+        }
     },
     {
         name: 'Ranker',
-        url: '/ranker'
+        url: '/ranker',
     },
 
 ]
@@ -45,7 +54,7 @@ export const NavBar: React.FC = ({children}) => {
     function toggleDrawer(){
         setOpened(!opened)
     }
-
+    const trigger = useScrollTrigger();
     return(
         <MediaQuery maxWidth={599}>
             {(isMobile) =>
@@ -62,7 +71,7 @@ export const NavBar: React.FC = ({children}) => {
                     <List style={{width:'250px'}}>
                         {
                             navList.map(item => 
-                                <ListItem component={(props) => <NavLink to={item.url} exact={item.url==='/'} activeStyle={buttonSelectedStyle} {...props}/>} onClick={() => toggleDrawer()} button>
+                                <ListItem component={(props) => <NavLink {...props} to={item.url} exact={item.url==='/'} isActive={item.isActive} activeStyle={buttonSelectedStyle} />} onClick={() => toggleDrawer()} button>
                                     <ListItemText primary={item.name}/>
                                 </ListItem>
                             )
@@ -71,44 +80,47 @@ export const NavBar: React.FC = ({children}) => {
                 </Drawer>
                 </>
             }
-            <AppBar position='sticky' color='default' style={{justifyContent:'space-between', flexDirection:'row', height:'55px', paddingLeft:!isMobile ? 24 : undefined, paddingRight:24}} >
-                <div style={{display:'flex'}}>
-                    {isMobile &&
-                        <IconButton 
-                            edge="start" 
-                            //size='small' 
-                            color="inherit" 
-                            onClick={() => toggleDrawer()} 
-                            style={{...navBarItemStyle, marginLeft:'10px'}}>
-                            <MenuIcon />
-                        </IconButton>
-                    }
+            <Slide appear={false} direction="down" in={!trigger}>
 
-                    
-                    <div onClick={() => {history.push('/')}} style={{display:'flex', cursor:'pointer'}}>
-                        {!isMobile && <img width={45} height={45} style={{alignSelf:'center'}} src='/logo256.png' alt='logo'/>}
-                        <Typography variant="h6" style={{alignSelf:'center', marginLeft:5}}>
-                            TH RANKER
-                        </Typography>
-                    </div>
-                </div>
-                {!isMobile && <div style={navBarItemStyle}>
-                    {
-                        navList.map(item => 
-                            <Button 
-                                component={(props) => <NavLink to={item.url} exact={item.url==='/'} activeStyle={buttonSelectedStyle} {...props} />} 
+            <AppBar color='default'  >
+                <Toolbar variant="dense" style={{justifyContent:'space-between', flexDirection:'row', paddingLeft: isMobile ? 8 : 24, paddingRight:24}}>
+                    <div style={{display:'flex'}}>
+                        {isMobile &&
+                            <IconButton 
+                                edge="start" 
+                                size='small' 
                                 color="inherit" 
-                                style={{marginLeft:'10px'}}
-                            >
-                                {item.name}
-                            </Button>
-                        )
-                    }
-                </div>}
+                                onClick={() => toggleDrawer()} 
+                                style={{...navBarItemStyle, marginLeft:'10px'}}>
+                                <MenuIcon />
+                            </IconButton>
+                        }
+
+                        
+                        <div onClick={() => {history.push('/')}} style={{display:'flex', cursor:'pointer'}}>
+                            {!isMobile && <img width={45} height={45} style={{alignSelf:'center'}} src='/logo256.png' alt='logo'/>}
+                            <Typography variant="h6" style={{alignSelf:'center', marginLeft:5}}>
+                                TH RANKER
+                            </Typography>
+                        </div>
+                    </div>
+                    {!isMobile && <div style={navBarItemStyle}>
+                        {
+                            navList.map(item => 
+                                <Button 
+                                    component={(props) => <NavLink {...props} to={item.url} exact={item.url==='/'} activeStyle={buttonSelectedStyle} isActive={item.isActive}  />} 
+                                    color="inherit" 
+                                    style={{marginLeft:'10px'}}
+                                >
+                                    {item.name}
+                                </Button>
+                            )
+                        }
+                    </div>}
+                </Toolbar>
             </AppBar>
-            <Container>
-                <Box pt={3}>{children}</Box>
-            </Container>
+            </Slide>
+            <Box pl={1.5} pr={1.5} pt={10} overflow="hidden">{children}</Box>
             </>
         }
         </MediaQuery>

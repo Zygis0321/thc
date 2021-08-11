@@ -36,8 +36,9 @@ function PlayerContent(props: {player: Player, withFlag:boolean, homePage?:boole
         <CardContent style={props.homePage===true ? undefined :{paddingBottom:4}}>
             <div style={{display:'flex', marginBottom: props.homePage===true ? '0px':'12px'}}>
                 {props.withFlag && <Flag 
-                    style={{alignSelf:'center', marginRight:'12px',width: props.homePage===true ? '60px':'90px',objectFit:'fill', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',}}
+                    style={{alignSelf:'center', marginRight:'12px',width: props.homePage===true ? '60px':'90px',objectFit:'fill', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)', borderRadius:"4px",}}
                     alt = {getCountry(props.player.nation).name}
+                    title = {getCountry(props.player.nation).name}
                     code={getCountry(props.player.nation).alpha2code.toLowerCase()}
                 />}
                 <Typography variant={props.homePage===true ? 'h6' : "h5"} align='center' style = {{margin:'auto'}} color={props.homePage===true?'textPrimary':"secondary"}>
@@ -83,7 +84,7 @@ export function PlayerHomeCard(props: {player?: Player}){
         history.push(`/players/${playerId}`)
     }
     return(
-        <Card style = {{width:'100%', height:'100%'}}>
+        <Card  style = {{width:'100%', height:'100%'}}>
             <CardActionArea onClick={() => PlayerClicked(props.player?.id)} >
                 {
                     props.player === undefined ? <PlayerSkeleton/> :
@@ -104,13 +105,13 @@ export default function PlayerCard(props: Props){
     )
     return (
         props.player === null ?
-        <Card style = {{ display:'flex', height: '230px', width:'100%', maxWidth:'650px', marginLeft:'auto', marginRight:'auto'}}>
+        <Card className="Paper" style = {{ display:'flex', height: '230px', width:'100%', maxWidth:'650px', marginLeft:'auto', marginRight:'auto'}}>
             <Typography style={{margin:'auto'}}>
                 No player selected
             </Typography>
         </Card>
         :
-        <Card style = {{display:'flex',justifyContent:'flex-end', alignItems:'stretch',  maxWidth:'650px', marginLeft:'auto', marginRight:'auto', width:'100%'}}>
+        <Card className="Paper" style = {{display:'flex',justifyContent:'flex-end', alignItems:'stretch',  maxWidth:'650px', marginLeft:'auto', marginRight:'auto', width:'100%'}}>
                 
                     <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', width:'100%'}}>
                         <PlayerContent player={props.player} withFlag={isMobile} />
@@ -139,8 +140,9 @@ export default function PlayerCard(props: Props){
                         </CardActions>
                     </div>
             {!isMobile && <Flag 
-                style={{width:'340px', flex:'0 0 340px', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)',}}
+                style={{width:'340px', flex:'0 0 340px', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)', borderRadius:"4px",}}
                 alt = {getCountry(props.player.nation).name}
+                title = {getCountry(props.player.nation).name}
                 code={getCountry(props.player.nation).alpha2code.toLowerCase()}
             />}
         </Card>
