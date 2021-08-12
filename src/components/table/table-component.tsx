@@ -24,13 +24,16 @@ export const TableComponent: React.FC<Props> = (props) => {
     const handleSort = (a: CellValues, b: CellValues): number => {
         const fieldName = props.fields[orderBy].name;
         const dir = sortDir === 'asc' ? 1 : -1
-        
-        if(a[fieldName] === b[fieldName]){
+        const isLink = props.fields[orderBy].type === 'link';
+        const valueA = isLink ? a[fieldName].value : a[fieldName];
+        const valueB = isLink ? b[fieldName].value : b[fieldName];
+
+        if(valueA === valueB){
             if(a[props.fields[0].name] < b[props.fields[0].name])
                 return -1;
             return 1;
         }
-        if (a[fieldName] < b[fieldName])
+        if (valueA < valueB)
             return dir * -1;
         return dir;
     }
