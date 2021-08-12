@@ -1,15 +1,12 @@
 import { Grid, TableCell, TableContainer, TableHead, TextField, Typography } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableRow from '@material-ui/core/TableRow';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useMediaQuery } from 'react-responsive';
-import { useHistory, useParams } from 'react-router-dom';
-import { CellValues, CellField } from '../common/models';
-import { CountryCode, getCountry } from '../services/country-service';
+import { useParams } from 'react-router-dom';
+import { CellField } from '../common/models';
+import { getCountry } from '../services/country-service';
 import { getUniqueValues, Player, PlayerMain, PlayerValue } from '../services/player-service';
 import { RootState } from '../store/combineReducers';
 import { LoadingComponent } from './loading-component';
@@ -66,8 +63,6 @@ export const PlayerTable: React.FC = (props) => {
     const [searchText, setSearchText] = useState('');
     const [selectedNations, setSelectedNations] = useState<PlayerValue[]>([])
     const [selectedClubs, setSelectedClubs] = useState<PlayerValue[]>([])
-    
-    const isTablet = useMediaQuery({maxWidth: '959px'});
 
     const isValidPlayer = (player: Player) => {
         return(
@@ -128,7 +123,7 @@ export const PlayerTable: React.FC = (props) => {
                 </Grid>
                 <Grid item xs={12} md={9}>
                     <Paper className="Paper" style = {{marginLeft: '0px', marginRight: '0px', marginBottom:'12px'}}>
-                        <TableContainer className="Table-paper" component={Paper} style={{minHeight: 300, height: `calc(100vh - ${isTablet?'80px':'145px'})`}}>
+                        <TableContainer className="Table-paper" component={Paper} style={{minHeight: 300, height: `calc(100vh - 145px)`}}>
                             <Table stickyHeader>
                                 <TableComponent 
                                     fields={fields} 
