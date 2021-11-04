@@ -1,13 +1,14 @@
-import { AppBar, CircularProgress, Divider, Paper, Tab, Tabs, TextField, Typography } from '@material-ui/core';
+import { AppBar, CircularProgress, Paper, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid/Grid';
 import Autocomplete, { AutocompleteChangeDetails, AutocompleteChangeReason, createFilterOptions } from '@material-ui/lab/Autocomplete';
 import $ from "jquery";
 import React, { Component } from 'react';
+import { Helmet } from "react-helmet";
 import { connect } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import { RouteComponentProps } from 'react-router';
 import { percentageExceptionList, percentageNormalList } from '../data/scorecalc-data';
-import { Player, PlayerMain } from '../services/player-service';
+import { Player } from '../services/player-service';
 import tournamentsService, { PlayerPoints } from '../services/tournament-service';
 import { RootState } from '../store/combineReducers';
 import { PlayersCareerChart } from './charts/career-chart-wrapper';
@@ -60,8 +61,8 @@ export class ProgressComponent extends Component<Props, State>{
     }
 
     componentDidUpdate(prevProps: Props){
-        if(prevProps.players.length !== this.props.players.length && this.props.match.params.id !== undefined ||
-           prevProps.match.params.id !== this.props.match.params.id && this.props.players.length){
+        if((prevProps.players.length !== this.props.players.length && this.props.match.params.id !== undefined) ||
+           (prevProps.match.params.id !== this.props.match.params.id && this.props.players.length)){
             this.handlePlayerChange(undefined, this.getPlayerValue())
         }
     }
@@ -87,6 +88,10 @@ export class ProgressComponent extends Component<Props, State>{
     render(): React.ReactNode{
         return(
             <>
+            <Helmet>
+                <title>Players | Table Hockey Ranker</title>
+                <meta name="description" content="Explore and compare ITHF rank changes of table hockey players." />
+            </Helmet>
             {(this.props.match.params.id !== undefined && this.props.players.length === 0) 
             ? 
             <div style={{

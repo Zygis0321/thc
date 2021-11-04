@@ -1,6 +1,4 @@
-import { Box, Checkbox, IconButton, InputAdornment, List, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import { Clear, Search } from '@material-ui/icons';
+import { Box, Checkbox, List, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import React, { Component } from 'react';
 import { Player } from '../services/player-service';

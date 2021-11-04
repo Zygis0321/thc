@@ -1,4 +1,4 @@
-import { TableBody, TableCell, TableFooter, TablePagination, TableSortLabel } from "@material-ui/core";
+import { TableBody, TableCell, TableSortLabel } from "@material-ui/core";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import React, { useState } from "react";
@@ -39,7 +39,7 @@ export const TableComponent: React.FC<Props> = (props) => {
     }
 
     const page: number = props.pagination ? props.pagination.page : 0;
-    const rowsPerPage: number = props.pagination ? props.pagination.rowsPerPage : props.values.length;
+    const rowsPerPage: number = props.pagination ? props.pagination.rowsPerPage ?? 50 : props.values.length;
 
     return (
         <>

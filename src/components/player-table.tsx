@@ -1,13 +1,14 @@
-import { Grid, TableCell, TableContainer, TableHead, TextField, Typography } from '@material-ui/core';
+import { Grid, TableContainer, TextField } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { CellField } from '../common/models';
 import { getCountry } from '../services/country-service';
-import { getUniqueValues, Player, PlayerMain, PlayerValue } from '../services/player-service';
+import { getUniqueValues, Player, PlayerValue } from '../services/player-service';
 import { RootState } from '../store/combineReducers';
 import { LoadingComponent } from './loading-component';
 import { SearchField } from './search-field';
@@ -73,8 +74,16 @@ export const PlayerTable: React.FC = (props) => {
     }
 
     const filteredPlayers = players.filter(isValidPlayer);
-
+    const rowsPerPage = 50;
     return(
+        <>
+        <Helmet>
+            <meta
+                name="description"
+                content="A list of all ranked ITHF table hockey players. Easily search for players by name, nation or club."
+            />
+            <title>Players Table | Table Hockey Ranker</title>
+        </Helmet>
         <LoadingComponent isLoading={players.length === 0}>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={3}>
@@ -128,19 +137,18 @@ export const PlayerTable: React.FC = (props) => {
                                 <TableComponent 
                                     fields={fields} 
                                     values={filteredPlayers.map((player) => ({...player, name:{value: player.name, link: `/players/${player.id}`}}))} 
-                                    pagination={paginationProps} 
+                                    pagination={{...paginationProps, rowsPerPage}} 
                                     includeSerialNumber
                                 />
                             </Table>
                         </TableContainer>
                         <TablePaginationComponent
-                            count = {filteredPlayers.length}
-                            rowsPerPageOptions = {[20, 50, 100]}
+                            count = {Math.ceil(filteredPlayers.length / rowsPerPage)}
                         />
                     </Paper>
                 </Grid>
             </Grid>
         </LoadingComponent>
-
+        </>
     )
 }

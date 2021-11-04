@@ -1,10 +1,8 @@
-import { TableCell, TableContainer, TableHead, Typography } from '@material-ui/core';
+import { TableContainer } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableRow from '@material-ui/core/TableRow';
 import React from 'react';
-import { CellValues, CellField } from '../common/models';
+import { CellField } from '../common/models';
 import { PlayerMain } from '../services/player-service';
 import { TableComponent } from './table/table-component';
 

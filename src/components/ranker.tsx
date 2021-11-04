@@ -3,6 +3,7 @@ import { ClearAll, GroupAdd, List as ListIcon } from '@material-ui/icons';
 import arrayMove from 'array-move';
 import $ from "jquery";
 import React, { Component } from 'react';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import { RouteComponentProps, StaticContext } from 'react-router';
@@ -52,6 +53,13 @@ export class RankerComponent extends Component<Props, {}>{
     render(): React.ReactNode{
         return(
             <>
+                <Helmet>
+                    <meta
+                        name="description"
+                        content="Predict ITHF table hockey rank changes. Select players and see the magic."
+                    />
+                    <title>Ranker | Table Hockey Ranker</title>
+                </Helmet>
                 <MediaQuery maxWidth={599}>
                 {(isMobile) => 
                 <Box pb={isMobile ? 6 : 2}>
