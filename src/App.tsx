@@ -3,7 +3,7 @@ import $ from "jquery";
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { AnyAction, Dispatch } from 'redux';
 import './App.css';
 import { ErrorMessage } from "./components/error-message";
@@ -45,7 +45,7 @@ class AppComponent extends Component<Props, State> {
   
   render () {
     return (
-      <HashRouter>
+      <BrowserRouter>
         <NavBar>
           <Container style={{padding: 0}}>
             <Route exact path='/' component={Home} />
@@ -53,11 +53,11 @@ class AppComponent extends Component<Props, State> {
             <Route exact path= '/players/:id?' component={Progress} />
           </Container>
           <Container style={{padding: 0, maxWidth: 1600}}>
-            <Route path='/table/:page/:rowsPerPage' component={PlayerTable} />
+            <Route path='/table/:page' component={PlayerTable} />
           </Container>
         </NavBar>
         <ErrorMessage show={this.state.showError}/>
-      </HashRouter>
+      </BrowserRouter>
     );
   }
 }

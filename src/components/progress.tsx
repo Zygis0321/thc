@@ -15,6 +15,7 @@ import { PlayersYearChart } from './charts/year-chart-wrapper';
 import { ErrorMessage } from './error-message';
 import PlayerCard from './player-card';
 import { PlayerCompareTable } from './player-compare-table';
+import { Helmet } from "react-helmet";
 
 interface Params{
     id: string
@@ -87,6 +88,10 @@ export class ProgressComponent extends Component<Props, State>{
     render(): React.ReactNode{
         return(
             <>
+            <Helmet>
+                <title>Players | Table Hockey Ranker</title>
+                <meta name="description" content="Explore and compare ITHF rank changes of table hockey players." />
+            </Helmet>
             {(this.props.match.params.id !== undefined && this.props.players.length === 0) 
             ? 
             <div style={{

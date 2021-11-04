@@ -1,8 +1,10 @@
 import { Button, Typography } from "@material-ui/core";
 import { Whatshot } from "@material-ui/icons";
 import React, { useState } from "react";
+import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
+import { Link } from "react-router-dom";
 import { RootState } from "../store/combineReducers";
 import { PlayerHomeCard } from "./player-card";
 
@@ -27,6 +29,13 @@ export function Home(){
     )
     return(
         <>
+        <Helmet>
+            <meta
+                name="description"
+                content="TH Ranker is a set of tools that allow to visualize ITHF table hockey ranking changes."
+            />
+            <title>Table Hockey Ranker</title>
+        </Helmet>
             <div style={{display:'flex', justifyContent:'center'}}>
                 <div style={{alignSelf:'stretch'}}><Whatshot fontSize='large' style={{ color:'#2c387e'}}/></div>
 
@@ -60,7 +69,7 @@ export function Home(){
                     ) : getSkeletons(playerCount)   
                 }
             </div>
-            <div style={{textAlign:'center', margin:'20px'}}>
+            <div style={{display: 'flex', gap: 10, justifyContent: 'center', marginTop: 20, marginBottom: 20}}>
                 <Button 
                     variant='outlined' 
                     color='primary' 
@@ -70,6 +79,17 @@ export function Home(){
                     style={{width:'200px'}}
                 >
                     Load More
+                </Button>
+                <Button 
+                    variant='contained' 
+                    color='primary' 
+                    component={(props) => <Link to='/table/0' {...props}/>}
+                    onClick={() => {
+                        setPlayerCount(playerCount+6)
+                    }}
+                    style={{width:'200px'}}
+                >
+                    All players
                 </Button>
             </div>
         </>

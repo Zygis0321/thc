@@ -39,7 +39,7 @@ export const TableComponent: React.FC<Props> = (props) => {
     }
 
     const page: number = props.pagination ? props.pagination.page : 0;
-    const rowsPerPage: number = props.pagination ? props.pagination.rowsPerPage : props.values.length;
+    const rowsPerPage: number = props.pagination ? props.pagination.rowsPerPage ?? 50 : props.values.length;
 
     return (
         <>

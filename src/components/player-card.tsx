@@ -10,6 +10,8 @@ import { Player } from "../services/player-service";
 import Flag from 'react-world-flags'
 import { useSelector } from "react-redux";
 import { RootState } from "../store/combineReducers";
+import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 interface OwnProps{
     player: Player | null
@@ -77,15 +79,10 @@ function PlayerSkeleton(){
 
 
 export function PlayerHomeCard(props: {player?: Player}){
-    let history = useHistory()
-    
-    function PlayerClicked(playerId?: string){
-        if(playerId===undefined)return
-        history.push(`/players/${playerId}`)
-    }
+    const playerLink = `/players/${props.player?.id}`
     return(
         <Card  style = {{width:'100%', height:'100%'}}>
-            <CardActionArea onClick={() => PlayerClicked(props.player?.id)} >
+            <CardActionArea component={(props) => <Link to = {playerLink} {...props}/>}  >
                 {
                     props.player === undefined ? <PlayerSkeleton/> :
                     <PlayerContent player={props.player} withFlag homePage/>
@@ -111,6 +108,11 @@ export default function PlayerCard(props: Props){
             </Typography>
         </Card>
         :
+        <>
+        <Helmet>
+            <title>{`${props.player.name} | Table Hockey Ranker`}</title>
+            <meta name="description" content={`Explore and compare ${props.player.name} ITHF table hockey ranking changes.`} />
+        </Helmet>
         <Card className="Paper" style = {{display:'flex',justifyContent:'flex-end', alignItems:'stretch',  maxWidth:'650px', marginLeft:'auto', marginRight:'auto', width:'100%'}}>
                 
                     <div style={{display:'flex', flexDirection:'column', justifyContent:'space-between', width:'100%'}}>
@@ -125,15 +127,17 @@ export default function PlayerCard(props: Props){
                                 Learn More
                             </Button>
                             <Button 
+                                component = {(item) => 
+                                    <Link to = {{
+                                        pathname: '/ranker',
+                                        state: {addPlayer: props.player}
+                                        }}
+                                        {...item}
+                                    />
+                                }
                                 size="small" 
                                 color="primary"
                                 disabled={playersCompare.some(player => props.player?.id===player.id)}
-                                onClick = {() => {
-                                    history.push({
-                                        pathname: '/ranker',
-                                        state: {addPlayer: props.player}
-                                    })
-                                }}
                             >
                                 Add to Ranker
                             </Button>
@@ -146,5 +150,6 @@ export default function PlayerCard(props: Props){
                 code={getCountry(props.player.nation).alpha2code.toLowerCase()}
             />}
         </Card>
+        </>
     )
 }

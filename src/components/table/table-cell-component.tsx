@@ -1,6 +1,7 @@
-import { Link, TableCell } from "@material-ui/core";
+import { Link as MaterialLink, TableCell } from "@material-ui/core";
 import React from "react";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 import Flag from "react-world-flags";
 import { CellField } from "../../common/models";
 import { getCountry } from "../../services/country-service";
@@ -12,7 +13,6 @@ type Props = {
 }
 
 export const TableCellComponent: React.FC<Props> = (props) => {
-    const history = useHistory();
     switch (props.field.type) {
         case 'flag':
             return (
@@ -28,14 +28,13 @@ export const TableCellComponent: React.FC<Props> = (props) => {
         case 'link':
             return (
                 <TableCell className={props.class}>
-                    <Link 
-                        component="button"
-                        onClick={()=>history.push(props.value.link)} 
+                    <MaterialLink 
+                        component = {(item) => <Link to={props.value.link} {...item}/>}
                         color="inherit"
                         variant="body2"
                     >
                         {props.value.value}
-                    </Link>
+                    </MaterialLink>
                 </TableCell>
             );
         case 'text':
