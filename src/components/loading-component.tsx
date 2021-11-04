@@ -1,5 +1,5 @@
 import CircularProgress from "@material-ui/core/CircularProgress"
-import React, { PropsWithChildren } from "react"
+import React from "react"
 
 type Props = {
     isLoading: boolean;

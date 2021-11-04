@@ -1,6 +1,5 @@
 import { Link as MaterialLink, TableCell } from "@material-ui/core";
 import React from "react";
-import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import Flag from "react-world-flags";
 import { CellField } from "../../common/models";

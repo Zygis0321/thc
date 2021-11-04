@@ -1,4 +1,4 @@
-import { Grid, TableCell, TableContainer, TableHead, TextField, Typography } from '@material-ui/core';
+import { Grid, TableContainer, TextField } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { CellField } from '../common/models';
 import { getCountry } from '../services/country-service';
-import { getUniqueValues, Player, PlayerMain, PlayerValue } from '../services/player-service';
+import { getUniqueValues, Player, PlayerValue } from '../services/player-service';
 import { RootState } from '../store/combineReducers';
 import { LoadingComponent } from './loading-component';
 import { SearchField } from './search-field';

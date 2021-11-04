@@ -1,4 +1,4 @@
-import { TableBody, TableCell, TableFooter, TablePagination, TableSortLabel } from "@material-ui/core";
+import { TableBody, TableCell, TableSortLabel } from "@material-ui/core";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import React, { useState } from "react";

@@ -85,8 +85,8 @@ export class RankedPlayersList extends Component<Props, {}>{
                 shouldCancelStart = {(e: any) => {
                     if(
                         e.target.id === "buttonRemove" || 
-                        e.target.nearestViewportElement !== undefined && 
-                        e.target.nearestViewportElement.id === "buttonRemove"
+                        (e.target.nearestViewportElement !== undefined && 
+                        e.target.nearestViewportElement.id === "buttonRemove")
                     ){
                         return true
                     }
