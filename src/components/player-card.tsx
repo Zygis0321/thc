@@ -95,7 +95,7 @@ export function PlayerHomeCard(props: {player?: Player}){
 
 export default function PlayerCard(props: Props){
     const isMobile = useMediaQuery({maxWidth: 959});
-    const history = useHistory()
+
     const playersCompare = useSelector(
         (state: RootState) => 
         state.ranker.playersCompare
