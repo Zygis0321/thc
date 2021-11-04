@@ -6,7 +6,6 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
-import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import Flag from 'react-world-flags';
 import { getCountry } from "../services/country-service";
