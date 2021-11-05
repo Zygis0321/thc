@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import { CellField } from '../common/models';
 import { getCountry } from '../services/country-service';
+import { isSearchMatch } from '../services/filter-service';
 import { getUniqueValues, Player, PlayerValue } from '../services/player-service';
 import { RootState } from '../store/combineReducers';
 import { LoadingComponent } from './loading-component';
@@ -67,7 +68,7 @@ export const PlayerTable: React.FC = (props) => {
 
     const isValidPlayer = (player: Player) => {
         return(
-            player.name.toLowerCase().includes(searchText.toLowerCase()) &&
+            isSearchMatch(searchText, player.name.split(' ')) &&
             (selectedNations.length === 0 || selectedNations.some((nation) => nation === player.nation)) &&
             (selectedClubs.length === 0 || selectedClubs.some((club) => club === player.club))
         )
