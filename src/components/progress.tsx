@@ -90,7 +90,7 @@ export class ProgressComponent extends Component<Props, State>{
     filterOptions(options: Player[], state: FilterOptionsState<Player>): Player[]{
         return maxFilter<Player>(
             options, 
-            p => isSearchMatch(state.inputValue, [...p.name.split(' '), ... p.nationName.split(' '), ...p.club.split(' ')]), 
+            p => isSearchMatch(state.inputValue, [...p.name.split(' '), ...p.nationName.split(' '), ...p.club.split(' ')]), 
             100
         )
     }

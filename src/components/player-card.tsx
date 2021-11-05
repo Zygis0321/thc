@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 import Flag from 'react-world-flags';
 import { Player } from "../services/player-service";
 import { RootState } from "../store/combineReducers";
-import { playersReducer } from "../store/players/player-reducers";
 
 interface OwnProps{
     player: Player | null
