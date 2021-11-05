@@ -27,6 +27,7 @@ const fields: CellField[] = [
         type: 'flag',
         name: 'nation',
         label: 'Nation',
+        alpha2Code: 'nationAlpha2Code',
     },
     {
         type: 'text',

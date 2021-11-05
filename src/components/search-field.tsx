@@ -5,7 +5,8 @@ import React from "react"
 type Props = {
     label: string,
     searchText: string,
-    onChange: (text: string) => void
+    onChange: (text: string) => void,
+    helperText?: string,
 }
 
 export const SearchField: React.FC<Props> = (props) => {
@@ -23,6 +24,7 @@ export const SearchField: React.FC<Props> = (props) => {
                     document.getElementById('searchField')?.blur();
                 }
             }}
+            helperText = {props.helperText}
             InputProps={{
                 startAdornment: (
                     <InputAdornment position="start">

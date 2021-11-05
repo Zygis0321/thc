@@ -1,6 +1,7 @@
 import { AppBar, CircularProgress, Paper, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid/Grid';
-import Autocomplete, { AutocompleteChangeDetails, AutocompleteChangeReason, createFilterOptions } from '@material-ui/lab/Autocomplete';
+import { FilterOptionsState } from '@material-ui/lab';
+import Autocomplete, { AutocompleteChangeDetails, AutocompleteChangeReason } from '@material-ui/lab/Autocomplete';
 import $ from "jquery";
 import React, { Component } from 'react';
 import { Helmet } from "react-helmet";
@@ -8,6 +9,7 @@ import { connect } from 'react-redux';
 import MediaQuery from 'react-responsive';
 import { RouteComponentProps } from 'react-router';
 import { percentageExceptionList, percentageNormalList } from '../data/scorecalc-data';
+import { isSearchMatch, maxFilter } from '../services/filter-service';
 import { Player } from '../services/player-service';
 import tournamentsService, { PlayerPoints } from '../services/tournament-service';
 import { RootState } from '../store/combineReducers';
@@ -58,6 +60,7 @@ export class ProgressComponent extends Component<Props, State>{
         if(this.props.match.params.id !== undefined && this.props.players.length){
             this.handlePlayerChange(undefined, this.getPlayerValue())
         }
+
     }
 
     componentDidUpdate(prevProps: Props){
@@ -84,6 +87,14 @@ export class ProgressComponent extends Component<Props, State>{
         return []
     }
     
+    filterOptions(options: Player[], state: FilterOptionsState<Player>): Player[]{
+        return maxFilter<Player>(
+            options, 
+            p => isSearchMatch(state.inputValue, [...p.name.split(' '), ...p.nationName.split(' '), ...p.club.split(' ')]), 
+            100
+        )
+    }
+
 
     render(): React.ReactNode{
         return(
@@ -114,11 +125,9 @@ export class ProgressComponent extends Component<Props, State>{
                                 getOptionLabel = {(option) => option.name}
                                 value = {this.state.selectedPlayer}
                                 renderInput = {(params) => 
-                                    <TextField {...params} label="Select a player" variant = "outlined" />
+                                    <TextField {...params} label="Select a player" variant = "outlined" helperText="Search by player name, nation or club"/>
                                 }
-                                filterOptions = {createFilterOptions({
-                                    limit: 100
-                                })}
+                                filterOptions = {this.filterOptions}
                                 onChange = {this.handleValueChange}
                                 loading = {this.props.players.length === 0}
                             />
@@ -132,9 +141,7 @@ export class ProgressComponent extends Component<Props, State>{
                                 renderInput = {(params) => 
                                     <TextField {...params} label="Select players to compare" />
                                 }
-                                filterOptions = {createFilterOptions({
-                                    limit: 100
-                                })}
+                                filterOptions = {this.filterOptions}
                                 onChange = {this.handlePlayerCompareChange}
                                 loading = {this.props.players.length === 0}
                             />

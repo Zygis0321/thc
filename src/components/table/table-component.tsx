@@ -24,9 +24,8 @@ export const TableComponent: React.FC<Props> = (props) => {
     const handleSort = (a: CellValues, b: CellValues): number => {
         const fieldName = props.fields[orderBy].name;
         const dir = sortDir === 'asc' ? 1 : -1
-        const isLink = props.fields[orderBy].type === 'link';
-        const valueA = isLink ? a[fieldName].value : a[fieldName];
-        const valueB = isLink ? b[fieldName].value : b[fieldName];
+        const valueA = a[fieldName];
+        const valueB = b[fieldName];
 
         if(valueA === valueB){
             if(a[props.fields[0].name] < b[props.fields[0].name])
@@ -93,7 +92,7 @@ export const TableComponent: React.FC<Props> = (props) => {
                                 !(isTablet && field.hideTablet) && 
                                 <TableCellComponent
                                     field = {field}
-                                    value = {value[field.name]}
+                                    values = {value}
                                     class = {index+1 < props.fields.length ? "Table-cell": undefined}
                                 />
                             )

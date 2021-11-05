@@ -1,14 +1,17 @@
 import { Level } from "../data/scorecalc-data";
+import { getCountry } from "./country-service";
 
 
 export interface Player{
     name: string,
     id: string,
     rank: number,
-    nation: string,
+    nationAlpha2Code: string,
+    nationName: string, 
     points: number,
-    value: number
-    club: string
+    value: number,
+    club: string,
+    playerLink: string,
 }
 
 export interface PlayerRanked extends Player{
@@ -117,14 +120,17 @@ class PlayersService {
         });
         let ret: Player[] = []
         for(var i=2; i+1<stringArray.length; i++){
+            const country = getCountry(stringArray[i][4])
             const player:Player = {
                 rank: Number(stringArray[i][0]),
                 id: stringArray[i][1],
                 name: stringArray[i][2],
                 club: stringArray[i][3],
-                nation: stringArray[i][4],
                 points: Number(stringArray[i][5]),
                 value: Number(stringArray[i][6]),
+                nationAlpha2Code: country.alpha2code,
+                nationName: country.name,
+                playerLink: `/players/${stringArray[i][1]}`
             }
             ret.push(player)
         }

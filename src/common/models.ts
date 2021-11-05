@@ -12,8 +12,8 @@ type Field = {
 }
 
 type TextField = Field & {type: 'text'; isBold?: boolean; };
-type FlagField = Field & {type: 'flag'; };
-type LinkField = Field & {type: 'link'; };
+type FlagField = Field & {type: 'flag'; alpha2Code: string; };
+type LinkField = Field & {type: 'link'; link: string};
 
 export type CellField = 
     | TextField

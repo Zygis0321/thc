@@ -1,13 +1,14 @@
 import { Grid, TableContainer, TextField } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import { FilterOptionsState } from '@material-ui/lab';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import { CellField } from '../common/models';
-import { getCountry } from '../services/country-service';
+import { isSearchMatch, maxFilter } from '../services/filter-service';
 import { getUniqueValues, Player, PlayerValue } from '../services/player-service';
 import { RootState } from '../store/combineReducers';
 import { LoadingComponent } from './loading-component';
@@ -30,11 +31,13 @@ const fields: CellField[] = [
         type: 'link',
         name: 'name',
         label: 'Name',
+        link: 'playerLink',
     },
     {
         type: 'flag',
-        name: 'nation',
+        name: 'nationName',
         label: 'Nation',
+        alpha2Code: 'nationAlpha2Code'
     },
     {
         type: 'text',
@@ -67,8 +70,8 @@ export const PlayerTable: React.FC = (props) => {
 
     const isValidPlayer = (player: Player) => {
         return(
-            player.name.toLowerCase().includes(searchText.toLowerCase()) &&
-            (selectedNations.length === 0 || selectedNations.some((nation) => nation === player.nation)) &&
+            isSearchMatch(searchText, player.name.split(' ')) &&
+            (selectedNations.length === 0 || selectedNations.some((nation) => nation === player.nationName)) &&
             (selectedClubs.length === 0 || selectedClubs.some((club) => club === player.club))
         )
     }
@@ -81,6 +84,15 @@ export const PlayerTable: React.FC = (props) => {
 
     const filteredPlayers = players.filter(isValidPlayer);
     const rowsPerPage = 50;
+
+    function filterOptions(options: PlayerValue[], state: FilterOptionsState<PlayerValue>): PlayerValue[]{
+        return maxFilter<PlayerValue>(
+            options, 
+            p => isSearchMatch(state.inputValue, (p as string).split(' ')), 
+            100
+        )
+    }
+
     return(
         <>
         <Helmet>
@@ -108,14 +120,12 @@ export const PlayerTable: React.FC = (props) => {
                             <Autocomplete
                                 multiple
                                 blurOnSelect
-                                options = {getUniqueValues(players, 'nation')}
-                                getOptionLabel = {(option) => getCountry(option as string).name}
+                                options = {getUniqueValues(players, 'nationName')}
+                                //getOptionLabel = {(option) => getCountry(option as string).name}
                                 renderInput = {(params) => 
                                     <TextField {...params} label="Select nations" />
                                 }
-                                filterOptions = {createFilterOptions({
-                                    limit: 100
-                                })}
+                                filterOptions = {filterOptions}
                                 onChange = {(e, newValue) => {
                                     setSelectedNations(newValue)
                                     handleFilterChange()
@@ -130,9 +140,7 @@ export const PlayerTable: React.FC = (props) => {
                                 renderInput = {(params) => 
                                     <TextField {...params} label="Select clubs" />
                                 }
-                                filterOptions = {createFilterOptions({
-                                    limit: 100
-                                })}
+                                filterOptions = {filterOptions}
                                 onChange = {(e, newValue) => {
                                     setSelectedClubs(newValue)
                                     handleFilterChange()
@@ -147,7 +155,7 @@ export const PlayerTable: React.FC = (props) => {
                             <Table stickyHeader>
                                 <TableComponent 
                                     fields={fields} 
-                                    values={filteredPlayers.map((player) => ({...player, name:{value: player.name, link: `/players/${player.id}`}}))} 
+                                    values={filteredPlayers} 
                                     pagination={{...paginationProps, rowsPerPage}} 
                                     includeSerialNumber
                                 />
