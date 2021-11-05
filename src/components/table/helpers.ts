@@ -6,3 +6,11 @@ export const getPaginationProps = (locationProps: PaginationLocationProps): Pagi
         page, 
     };
 }
+
+export const getPathWithParams = (pagination: PaginationProps, path: string) => {
+    let pathWithParams = path;
+    const pageParam = pagination.page === null ? '0' : (pagination.page).toString();
+    pathWithParams = pathWithParams.replace(":page", pageParam);
+
+    return pathWithParams;
+}

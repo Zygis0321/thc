@@ -5,14 +5,14 @@ import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import { CellField } from '../common/models';
 import { getCountry } from '../services/country-service';
 import { getUniqueValues, Player, PlayerValue } from '../services/player-service';
 import { RootState } from '../store/combineReducers';
 import { LoadingComponent } from './loading-component';
 import { SearchField } from './search-field';
-import { getPaginationProps } from './table/helpers';
+import { getPaginationProps, getPathWithParams } from './table/helpers';
 import { PaginationLocationProps } from './table/models';
 import { TableComponent } from './table/table-component';
 import { TablePaginationComponent } from './table/table-pagination-component';
@@ -72,6 +72,12 @@ export const PlayerTable: React.FC = (props) => {
             (selectedClubs.length === 0 || selectedClubs.some((club) => club === player.club))
         )
     }
+    const history = useHistory();
+    const { path } = useRouteMatch();
+
+    const handleFilterChange = () => {
+        history.replace(getPathWithParams({page: 0}, path))
+    }
 
     const filteredPlayers = players.filter(isValidPlayer);
     const rowsPerPage = 50;
@@ -92,7 +98,10 @@ export const PlayerTable: React.FC = (props) => {
                             <SearchField
                                 label="Player name"
                                 searchText={searchText}
-                                onChange={(text: string) => setSearchText(text)}
+                                onChange={(text: string) => {
+                                    setSearchText(text)
+                                    handleFilterChange()
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={12}>
@@ -109,6 +118,7 @@ export const PlayerTable: React.FC = (props) => {
                                 })}
                                 onChange = {(e, newValue) => {
                                     setSelectedNations(newValue)
+                                    handleFilterChange()
                                 }}
                             />
                         </Grid>
@@ -125,6 +135,7 @@ export const PlayerTable: React.FC = (props) => {
                                 })}
                                 onChange = {(e, newValue) => {
                                     setSelectedClubs(newValue)
+                                    handleFilterChange()
                                 }}
                             />
                         </Grid>
