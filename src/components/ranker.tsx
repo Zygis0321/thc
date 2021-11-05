@@ -9,7 +9,6 @@ import MediaQuery from 'react-responsive';
 import { RouteComponentProps, StaticContext } from 'react-router';
 import { AnyAction, Dispatch } from 'redux';
 import { Level, levelList } from '../data/scorecalc-data';
-import { getCountry } from '../services/country-service';
 import playersService, { Player, PlayerRanked } from '../services/player-service';
 import { RootState } from '../store/combineReducers';
 import { updateRankerState } from '../store/ranker/ranker-actions';
@@ -69,7 +68,7 @@ export class RankerComponent extends Component<Props, {}>{
                             {(!isMobile || this.props.rankerState.bottomNavVal === 0) &&
                             <Grid item xs={12}  sm={3} style={{minWidth:'200px'}}>
                                 <PlayersAutoComplete
-                                    players = {this.props.players.map(p => ({...p, nation: getCountry(p.nation).name}))}
+                                    players = {this.props.players}
                                     handlePlayerToggle = {this.handlePlayerToggle}
                                     playersCompare = {this.props.rankerState.playersCompare}
                                 />

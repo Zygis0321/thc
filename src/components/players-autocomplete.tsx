@@ -1,7 +1,7 @@
 import { Box, Checkbox, List, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import React, { Component } from 'react';
-import { isSearchMatch } from '../services/filter-service';
+import { isSearchMatch, maxFilter } from '../services/filter-service';
 import { Player } from '../services/player-service';
 import { SearchField } from './search-field';
 interface OwnProps{
@@ -34,7 +34,7 @@ export class PlayersAutoComplete extends Component<Props, State>{
                 />
                 <List dense>
                     {(!this.props.players.length ? Array.from(new Array(10)) : 
-                        this.props.players.filter(p => isSearchMatch(this.state.searchText, [...p.name.split(' '), ...p.nation.split(' '), ...p.club.split(' ')])).slice(0, 10))
+                        maxFilter<Player>(this.props.players, p => isSearchMatch(this.state.searchText, [...p.name.split(' '), ...p.nationName.split(' '), ...p.club.split(' ')]), 10)
                         .map((player) => {
                             return (
                                 player ? (
@@ -55,7 +55,7 @@ export class PlayersAutoComplete extends Component<Props, State>{
                                     </Box>
                                 )
                             )
-                        })}
+                        }))}
                 </List>
             </>
         )

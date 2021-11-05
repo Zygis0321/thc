@@ -8,9 +8,9 @@ import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import Flag from 'react-world-flags';
-import { getCountry } from "../services/country-service";
 import { Player } from "../services/player-service";
 import { RootState } from "../store/combineReducers";
+import { playersReducer } from "../store/players/player-reducers";
 
 interface OwnProps{
     player: Player | null
@@ -38,9 +38,9 @@ function PlayerContent(props: {player: Player, withFlag:boolean, homePage?:boole
             <div style={{display:'flex', marginBottom: props.homePage===true ? '0px':'12px'}}>
                 {props.withFlag && <Flag 
                     style={{alignSelf:'center', marginRight:'12px',width: props.homePage===true ? '60px':'90px',objectFit:'fill', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)', borderRadius:"4px",}}
-                    alt = {getCountry(props.player.nation).name}
-                    title = {getCountry(props.player.nation).name}
-                    code={getCountry(props.player.nation).alpha2code.toLowerCase()}
+                    alt = {props.player.nationName}
+                    title = {props.player.nationName}
+                    code={props.player.nationAlpha2Code.toLowerCase()}
                 />}
                 <Typography variant={props.homePage===true ? 'h6' : "h5"} align='center' style = {{margin:'auto'}} color={props.homePage===true?'textPrimary':"secondary"}>
                     {props.player.name}
@@ -65,28 +65,29 @@ function PlayerContent(props: {player: Player, withFlag:boolean, homePage?:boole
 }
 function PlayerSkeleton(){
     return(
-        <CardContent >
-            <div style={{display:'flex'}}>
-                <div style={{alignSelf:'center'}}><Skeleton variant='rect' width={60} height={40} /></div>
-                <div style={{margin:'auto'}}><Skeleton variant='text' width='120px' height={30}/></div>
-                <div style={{alignSelf:'center'}}><IconButton><ArrowForward fontSize='large'/></IconButton></div>
-            </div>
-            
-        </CardContent>
+        <CardActionArea>
+            <CardContent >
+                <div style={{display:'flex'}}>
+                    <div style={{alignSelf:'center'}}><Skeleton variant='rect' width={60} height={40} /></div>
+                    <div style={{margin:'auto'}}><Skeleton variant='text' width='120px' height={30}/></div>
+                    <div style={{alignSelf:'center'}}><IconButton><ArrowForward fontSize='large'/></IconButton></div>
+                </div>
+                
+            </CardContent>
+        </CardActionArea>
     )
 }
 
 
 export function PlayerHomeCard(props: {player?: Player}){
-    const playerLink = `/players/${props.player?.id}`
+    const playerLink = props.player?.playerLink
     return(
         <Card  style = {{width:'100%', height:'100%'}}>
+            {props.player === undefined ? <PlayerSkeleton/> :
             <CardActionArea component={(props) => <Link to = {playerLink} {...props}/>}  >
-                {
-                    props.player === undefined ? <PlayerSkeleton/> :
                     <PlayerContent player={props.player} withFlag homePage/>
-                }
             </CardActionArea>
+        }
         </Card>
 
     )
@@ -144,9 +145,9 @@ export default function PlayerCard(props: Props){
                     </div>
             {!isMobile && <Flag 
                 style={{width:'340px', flex:'0 0 340px', boxShadow: '0 0px 3px 0px rgb(150, 150, 150)', borderRadius:"4px",}}
-                alt = {getCountry(props.player.nation).name}
-                title = {getCountry(props.player.nation).name}
-                code={getCountry(props.player.nation).alpha2code.toLowerCase()}
+                alt = {props.player.nationName}
+                title = {props.player.nationName}
+                code={props.player.nationAlpha2Code.toLowerCase()}
             />}
         </Card>
         </>

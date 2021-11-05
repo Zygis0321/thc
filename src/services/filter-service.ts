@@ -5,7 +5,17 @@ export const isSearchMatch = (searchText: string, keywordsToMatch: string[]) => 
     for(const searchKeyword of searchKeywords){
         let isMatch = false;
         for(const matchKeyword of matchKeywords){
-            if(searchKeyword === matchKeyword.slice(0, searchKeyword.length)){
+            let isKeywordMatch = true;
+            if(matchKeyword.length < searchKeyword.length){
+                continue;
+            }
+            for(let i=0; i<searchKeyword.length; i++){
+                if (searchKeyword[i] !== matchKeyword[i]){
+                    isKeywordMatch = false;
+                    break;
+                }
+            }
+            if(isKeywordMatch){
                 isMatch = true;
                 break;
             }
@@ -16,4 +26,21 @@ export const isSearchMatch = (searchText: string, keywordsToMatch: string[]) => 
     }
 
     return true;
+}
+
+export function maxFilter<T>(array: T[], condition: (value: T) => boolean, limit: number): T[]{
+    let filteredArray: T[] = []
+
+    for(const item of array){
+        if(filteredArray.length >= limit){
+            break;
+        }
+
+        if(condition(item)){
+            filteredArray.push(item);
+        }
+    }
+
+    return filteredArray;
+
 }
