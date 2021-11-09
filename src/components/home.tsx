@@ -83,7 +83,7 @@ export function Home(){
                 <Button 
                     variant='contained' 
                     color='primary' 
-                    component={(props) => <Link to='/table/0' {...props}/>}
+                    component={(props) => <Link to='/table' {...props}/>}
                     onClick={() => {
                         setPlayerCount(playerCount+6)
                     }}

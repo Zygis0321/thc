@@ -32,7 +32,7 @@ const navList: navItem[] = [
     },
     {
         name: 'Table',
-        url: '/table/0',
+        url: '/table',
         isActive: (match: any, location: any) => {
             const path:string = location.pathname;
             return path.split('/')[1] === 'table';
