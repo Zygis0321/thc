@@ -4,5 +4,5 @@ export type PaginationProps = {
 }
 
 export type PaginationLocationProps = {
-    page: string,
+    page?: string,
 }

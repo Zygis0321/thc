@@ -53,7 +53,7 @@ class AppComponent extends Component<Props, State> {
             <Route exact path= '/players/:id?' component={Progress} />
           </Container>
           <Container style={{padding: 0, maxWidth: 1600}}>
-            <Route path='/table/:page' component={PlayerTable} />
+            <Route path='/table/:page?' component={PlayerTable} />
           </Container>
         </NavBar>
         <ErrorMessage show={this.state.showError}/>
