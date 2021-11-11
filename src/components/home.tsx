@@ -21,7 +21,7 @@ function getSkeletons(count: number){
 export function Home(){
     
     const isMobile = useMediaQuery({maxWidth:'599px'})
-    const [playerCount, setPlayerCount] = useState(6)
+    const [playerCount, setPlayerCount] = useState(isMobile ? 4 : 6)
 
     const players = useSelector(
         (state: RootState) => 
