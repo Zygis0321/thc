@@ -60,7 +60,7 @@ export const NavBar: React.FC = ({children}) => {
             {(isMobile) =>
             <>
             {isMobile && <>
-                <Drawer anchor='left' open={opened} onClose={() => toggleDrawer()} style={{zIndex:999999}}>
+                <Drawer anchor='left' keepMounted open={opened} onClose={() => toggleDrawer()} style={{zIndex:999999}}>
                     <div style={{position:'relative', margin:6}}>
                         <img width={100} height={100} src='/logo256.png' alt='logo'/>
                         <Typography variant="h6"  style={{position:'absolute', left:70, bottom:0}}>
