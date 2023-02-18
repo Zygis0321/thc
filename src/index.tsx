@@ -1,10 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
-import { Provider } from 'react-redux';
-import store from './store';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
+import { Provider } from "react-redux";
+import store from "./store";
+import ReactGA from "react-ga4";
+
+ReactGA.initialize("G-Z9YTDFVEVD");
 
 ReactDOM.render(
   <React.StrictMode>
@@ -13,7 +16,7 @@ ReactDOM.render(
     </Provider>
   </React.StrictMode>,
 
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change
