@@ -24,6 +24,7 @@ import { ErrorMessage } from "./error-message";
 interface OwnProps {
   players: Player[];
   handlePlayerToggle: (player: Player, forceAdd?: boolean) => void;
+  addPlayersInBulk?: (players: Player[]) => void;
   playersCompare: Player[];
 }
 
@@ -207,15 +208,26 @@ export class PlayersAutoComplete extends Component<Props, State> {
 
       if (data.players && Array.isArray(data.players)) {
         // Match extracted player names with existing players
+        const matchedPlayers: Player[] = [];
+
         data.players.forEach((playerName: string) => {
           const matchedPlayer = this.props.players.find((player) =>
             isSearchMatch(playerName, player.name.split(" "))
           );
 
           if (matchedPlayer) {
-            this.props.handlePlayerToggle(matchedPlayer, true);
+            matchedPlayers.push(matchedPlayer);
           }
         });
+
+        // Use bulk add if available, otherwise fall back to individual toggles
+        if (this.props.addPlayersInBulk && matchedPlayers.length > 0) {
+          this.props.addPlayersInBulk(matchedPlayers);
+        } else {
+          matchedPlayers.forEach((player) => {
+            this.props.handlePlayerToggle(player, true);
+          });
+        }
       }
 
       // Close dialog and reset text

@@ -96,6 +96,7 @@ export class RankerComponent extends Component<Props, {}> {
                       <PlayersAutoComplete
                         players={this.props.players}
                         handlePlayerToggle={this.handlePlayerToggle}
+                        addPlayersInBulk={this.addPlayersInBulk}
                         playersCompare={this.props.rankerState.playersCompare}
                       />
                     </Grid>
@@ -257,30 +258,94 @@ export class RankerComponent extends Component<Props, {}> {
         player.id
     )
       .then((res) => {
-        let score = Number(res);
-        let items = [...this.props.rankerState.playersCompare];
-        for (var i = 0; i < items.length; i++) {
-          if (items[i].id === player.id && items[i].lowestScore === -1) {
-            let item = { ...items[i] };
-            item.lowestScore = score;
-
-            items[i] = item;
-            this.props.updateRankerState({
-              ...this.props.rankerState,
-              playersCompare: this.recalc(
-                items,
-                this.props.rankerState.selectedLevel
-              ),
-            });
-
-            break;
-          }
-        }
+        const score = Number(res);
+        this.updatePlayerLowestScore(player.id, score);
       })
       .catch(() => {
         this.setState({ showError: true });
       });
   };
+
+  private readonly updatePlayerLowestScore = (
+    playerId: string,
+    score: number
+  ): void => {
+    const items = [...this.props.rankerState.playersCompare];
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].id === playerId && items[i].lowestScore === -1) {
+        const item = { ...items[i] };
+        item.lowestScore = score;
+        items[i] = item;
+
+        this.props.updateRankerState({
+          ...this.props.rankerState,
+          playersCompare: this.recalc(
+            items,
+            this.props.rankerState.selectedLevel
+          ),
+        });
+        break;
+      }
+    }
+  };
+
+  private readonly addPlayersInBulk = (players: Player[]): void => {
+    if (players.length === 0) return;
+
+    // Filter out players that are already in the list
+    const newPlayers = players.filter(
+      (player) =>
+        !this.props.rankerState.playersCompare.some((p) => p.id === player.id)
+    );
+
+    if (newPlayers.length === 0) return;
+
+    // Add all players at once with initial recalc
+    const playersWithDefaults = newPlayers.map((player, index) => ({
+      ...player,
+      pos: this.props.rankerState.playersCompare.length + index + 1,
+      score: -1,
+      lowestScore: -1,
+      newRank: -1,
+      newPoints: -1,
+    }));
+
+    const updatedPlayersCompare = this.recalc(
+      this.props.rankerState.playersCompare.concat(playersWithDefaults),
+      this.props.rankerState.selectedLevel
+    );
+
+    this.props.updateRankerState({
+      ...this.props.rankerState,
+      playersCompare: updatedPlayersCompare,
+    });
+
+    // Process API requests sequentially
+    this.processPlayerScoresSequentially(newPlayers);
+  };
+
+  private readonly processPlayerScoresSequentially = async (
+    players: Player[]
+  ): Promise<void> => {
+    for (let currentIndex = 0; currentIndex < players.length; currentIndex++) {
+      const currentPlayer = players[currentIndex];
+
+      try {
+        const res = await $.ajax(
+          "https://europe-west3-thranker.cloudfunctions.net/single?playerId=" +
+            currentPlayer.id
+        );
+
+        const score = Number(res);
+        this.updatePlayerLowestScore(currentPlayer.id, score);
+      } catch (error) {
+        this.setState({ showError: true });
+        // Continue with next player even if one fails
+      }
+    }
+  };
+
   private readonly handleClearAllClick = (): void => {
     this.props.updateRankerState({
       ...this.props.rankerState,
