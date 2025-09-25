@@ -10,7 +10,7 @@ import {
   Select,
   Typography,
 } from "@material-ui/core";
-import { ClearAll, GroupAdd, List as ListIcon } from "@material-ui/icons";
+import { ClearAll, GroupAdd, List as ListIcon, Sort } from "@material-ui/icons";
 import arrayMove from "array-move";
 import $ from "jquery";
 import React, { Component } from "react";
@@ -125,15 +125,39 @@ export class RankerComponent extends Component<Props, {}> {
                           </FormControl>
                         </Grid>
                         <Grid item>
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            startIcon={<ClearAll />}
-                            onClick={this.handleClearAllClick}
-                            style={{ float: "right" }}
+                          <Grid
+                            container
+                            spacing={1}
+                            direction={isMobile ? "column" : "row"}
+                            justify="flex-end"
                           >
-                            Clear
-                          </Button>
+                            <Grid item>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<Sort />}
+                                onClick={this.handleSortByValueClick}
+                                disabled={
+                                  this.props.rankerState.playersCompare.length <
+                                  2
+                                }
+                                fullWidth={isMobile}
+                              >
+                                Sort by Rank
+                              </Button>
+                            </Grid>
+                            <Grid item>
+                              <Button
+                                variant="contained"
+                                color="secondary"
+                                startIcon={<ClearAll />}
+                                onClick={this.handleClearAllClick}
+                                fullWidth={isMobile}
+                              >
+                                Clear
+                              </Button>
+                            </Grid>
+                          </Grid>
                         </Grid>
                       </Grid>
                       <Typography
@@ -352,6 +376,21 @@ export class RankerComponent extends Component<Props, {}> {
       playersCompare: [],
     });
   };
+
+  private readonly handleSortByValueClick = (): void => {
+    const sortedPlayers = [...this.props.rankerState.playersCompare].sort(
+      (a, b) => b.value - a.value
+    );
+
+    this.props.updateRankerState({
+      ...this.props.rankerState,
+      playersCompare: this.recalc(
+        sortedPlayers,
+        this.props.rankerState.selectedLevel
+      ),
+    });
+  };
+
   private readonly playerRemoved = (playerId: string): void => {
     this.props.updateRankerState({
       ...this.props.rankerState,
