@@ -10,6 +10,7 @@ import {
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
+  TextField,
 } from "@material-ui/core";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { CloudUpload } from "@material-ui/icons";
@@ -27,6 +28,7 @@ interface OwnProps {
 interface State {
   searchText: string;
   bulkUploadDialogOpen: boolean;
+  bulkUploadText: string;
 }
 
 type Props = OwnProps;
@@ -35,6 +37,7 @@ export class PlayersAutoComplete extends Component<Props, State> {
   public readonly state: State = {
     searchText: "",
     bulkUploadDialogOpen: false,
+    bulkUploadText: "",
   };
 
   render(): React.ReactNode {
@@ -107,10 +110,19 @@ export class PlayersAutoComplete extends Component<Props, State> {
         >
           <DialogTitle>Bulk Upload Players</DialogTitle>
           <DialogContent>
-            {/* Dialog content will be implemented later */}
-            <Box p={2}>
-              <p>Bulk upload functionality will be implemented here.</p>
-            </Box>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Paste player names"
+              placeholder="Paste player names here..."
+              multiline
+              rows={8}
+              fullWidth
+              variant="outlined"
+              value={this.state.bulkUploadText}
+              onChange={this.handleBulkUploadTextChange}
+              helperText="Paste player names in any format. The system will match them by name only."
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleBulkUploadClose} color="primary">
@@ -139,5 +151,11 @@ export class PlayersAutoComplete extends Component<Props, State> {
 
   private readonly handleBulkUploadClose = (): void => {
     this.setState({ bulkUploadDialogOpen: false });
+  };
+
+  private readonly handleBulkUploadTextChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    this.setState({ bulkUploadText: event.target.value });
   };
 }
