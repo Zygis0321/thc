@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -18,10 +19,11 @@ import React, { Component } from "react";
 import { isSearchMatch, maxFilter } from "../services/filter-service";
 import { Player } from "../services/player-service";
 import { SearchField } from "./search-field";
+import { ErrorMessage } from "./error-message";
 
 interface OwnProps {
   players: Player[];
-  handlePlayerToggle: (player: Player) => void;
+  handlePlayerToggle: (player: Player, forceAdd?: boolean) => void;
   playersCompare: Player[];
 }
 
@@ -29,6 +31,8 @@ interface State {
   searchText: string;
   bulkUploadDialogOpen: boolean;
   bulkUploadText: string;
+  bulkUploadLoading: boolean;
+  showError: boolean;
 }
 
 type Props = OwnProps;
@@ -38,6 +42,8 @@ export class PlayersAutoComplete extends Component<Props, State> {
     searchText: "",
     bulkUploadDialogOpen: false,
     bulkUploadText: "",
+    bulkUploadLoading: false,
+    showError: false,
   };
 
   render(): React.ReactNode {
@@ -125,18 +131,33 @@ export class PlayersAutoComplete extends Component<Props, State> {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleBulkUploadClose} color="primary">
-              Cancel
-            </Button>
             <Button
               onClick={this.handleBulkUploadClose}
               color="primary"
-              variant="contained"
+              disabled={this.state.bulkUploadLoading}
             >
-              Upload
+              Cancel
+            </Button>
+            <Button
+              onClick={this.handleBulkUploadSubmit}
+              color="primary"
+              variant="contained"
+              disabled={
+                this.state.bulkUploadLoading ||
+                !this.state.bulkUploadText.trim()
+              }
+              startIcon={
+                this.state.bulkUploadLoading ? (
+                  <CircularProgress size={20} />
+                ) : undefined
+              }
+            >
+              {this.state.bulkUploadLoading ? "Processing..." : "Upload"}
             </Button>
           </DialogActions>
         </Dialog>
+
+        <ErrorMessage show={this.state.showError} />
       </>
     );
   }
@@ -157,5 +178,58 @@ export class PlayersAutoComplete extends Component<Props, State> {
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     this.setState({ bulkUploadText: event.target.value });
+  };
+
+  private readonly handleBulkUploadSubmit = async (): Promise<void> => {
+    if (!this.state.bulkUploadText.trim()) return;
+
+    this.setState({ bulkUploadLoading: true });
+
+    try {
+      const response = await fetch(
+        "https://extract-players-237824890762.europe-west1.run.app",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: this.state.bulkUploadText,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.players && Array.isArray(data.players)) {
+        // Match extracted player names with existing players
+        data.players.forEach((playerName: string) => {
+          const matchedPlayer = this.props.players.find((player) =>
+            isSearchMatch(playerName, player.name.split(" "))
+          );
+
+          if (matchedPlayer) {
+            this.props.handlePlayerToggle(matchedPlayer, true);
+          }
+        });
+      }
+
+      // Close dialog and reset text
+      this.setState({
+        bulkUploadDialogOpen: false,
+        bulkUploadText: "",
+        bulkUploadLoading: false,
+      });
+    } catch (error) {
+      console.error("Error extracting players:", error);
+      this.setState({
+        bulkUploadLoading: false,
+        showError: true,
+      });
+    }
   };
 }
