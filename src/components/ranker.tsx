@@ -143,7 +143,7 @@ export class RankerComponent extends Component<Props, {}> {
                                 }
                                 fullWidth={isMobile}
                               >
-                                Sort by Rank
+                                Sort by Value
                               </Button>
                             </Grid>
                             <Grid item>
